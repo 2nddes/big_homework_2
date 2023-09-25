@@ -5,17 +5,6 @@
 #include"qquser.h"
 
 class qqGroupNodeLA :public groupNodeLA {
-private:
-	int m_qqGroupId = 0;//群ID,唯一标识
-	string m_qqGroupName = "无";//群名
-	vector<int> m_qqGroupMemberIDList;//群成员ID列表
-	int m_qqGroupOwnerID = 0;//群主ID
-	vector<int> m_qqGroupAdminsIDList;	//管理员ID列表
-
-	static int m_qqGroupCount;//群总数
-	qqGroupNodeLA* m_next = nullptr;
-
-	friend class qqGroupListLA;
 public:
 	qqGroupNodeLA();
 	qqGroupNodeLA(int qqGroupId, string qqGroupName, int qqGroupOwnerID, qqGroupNodeLA* next);
@@ -34,9 +23,9 @@ public:
 	bool isAllowInvite()const;
 	bool isAllowAdmins()const;
 
-	void addMember(int userId)override;
+	void addMember(int userId)override;//添加成员//TODO
 	void changeOwner(int userId)override;
-	void removeMember(int userId)override;
+	void removeMember(int userId)override;//注意是否为最后一人
 	void setQQGroupId(int qqGroupId);
 	void setQQGroupName(string qqGroupName);
 	void addQQGroupAdmin(int userId);
@@ -49,31 +38,43 @@ public:
 
 	int getQQGroupId()const;
 	string getQQGroupName()const;
-	vector<int> getQQGroupMemberIDList()const;
+	vector<userInfo> getQQGroupMemberIDList()const;
 	int getQQGroupOwnerID()const;
-	vector<int> getQQGroupAdminsIDList()const;
+	vector<userInfo> getQQGroupAdminsIDList()const;
 	int getQQGroupMemberCount()const;
 
 
 
 	void setNext(qqGroupNodeLA* next);
 	qqGroupNodeLA* getNext();
+private:
+	int m_qqGroupId = 0;//群ID,唯一标识
+	string m_qqGroupName = "无";//群名
+	vector<userInfo> m_qqGroupMemberIDList;//群成员信息列表
+	int m_qqGroupOwnerID = 0;//群主ID
+	vector<userInfo> m_qqGroupAdminsIDList;	//管理员信息列表
+
+	static int m_qqGroupCount;//群总数
+	qqGroupNodeLA* m_next = nullptr;
+
+	friend class qqGroupListLA;
 };
 
 class qqGroupListLA {
-private:
-	qqGroupNodeLA* m_sentinel;
-
-
 public:
 	qqGroupListLA();
 	~qqGroupListLA();
 
 	void saveGroupListData();
 	void addGroup(qqGroupNodeLA* node);
+	qqGroupNodeLA* addGroup(string qqGroupName, int qqGroupOwnerID);
 	void removeGroup(qqGroupNodeLA* node);
 	qqGroupNodeLA* findByGroupId(int qqGroupId);
 	qqGroupNodeLA* getSentinel();
+
+private:
+	qqGroupNodeLA* m_sentinel;
+
 
 };
 #endif // !QQGROUP_H

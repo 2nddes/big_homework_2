@@ -2,10 +2,11 @@
 #include"qquser.h"
 
 int qqUserListLA::m_qqUserCount = 0;
+qqUserNodeLA* qqUserListLA::m_sentinel = nullptr;
 
 qqUserListLA::qqUserListLA() {
 	ifstream ifs;
-	ifs.open("data\\qqusers.dat", ios::in, ios::binary);
+	ifs.open("qqusers.dat", ios::in, ios::binary);
 	ifs >> m_qqUserCount;
 	m_sentinel = new qqUserNodeLA(0, "sentinel", "sentinel",nullptr);
 	int platformId, qqId, qqFriendIdSize, qqGroupIdSize;
@@ -13,7 +14,7 @@ qqUserListLA::qqUserListLA() {
 	while (ifs >> platformId >> qqId >> qqName >> qqPassword >> qqFriendIdSize) {
 		qqUserNodeLA* qqUserToAdd = new qqUserNodeLA(qqId, qqName, qqPassword, m_sentinel->getNext());
 		qqUserToAdd->setPlatformId(platformId);
-		qqUserToAdd->setQQId(qqId);
+		qqUserToAdd->setAppUserId(qqId);
 		for (int i = 0; i < qqFriendIdSize; i++) {
 				int friendId;
 				ifs >> friendId;
@@ -32,17 +33,18 @@ qqUserListLA::qqUserListLA() {
 
 void qqUserListLA::saveQQUserList() {
 	ofstream ofs;
-	ofs.open("data\\qqusers.dat", ios::out, ios::binary);//清除原有数据
+	ofs.open("qqusers.dat", ios::out, ios::binary);//清除原有数据
 	qqUserNodeLA* p = m_sentinel->getNext();
 	ofs << m_qqUserCount << endl;
 	while (p != nullptr) {
 		ofs << p->getPlatformId()
-			<< p->getQQId() 
-			<< " " << p->getQQName() 
-			<< " " << p->getQQPassword()
-			<< " " << p->getQQFriendId().size();
-		for (int i = 0; i < p->getQQFriendId().size(); i++) {
-			ofs << " " << p->getQQFriendId()[i];
+			<< p->getAppUserId() 
+			<< " " << p->getUserName() 
+			<< " " << p->getUserPasswd()
+			<< " " << p->getQQFriendInfo().size();
+		for (int i = 0; i < p->getQQFriendInfo().size(); i++) {
+			ofs << " " << p->getQQFriendInfo()[i].friendId;
+			ofs << " " << p->getQQFriendInfo()[i].friendName;
 		}
 		ofs << " " << p->getQQGroupId().size();
 		for (int i = 0; i < p->getQQGroupId().size(); i++) {
@@ -67,7 +69,7 @@ qqUserListLA::~qqUserListLA() {
 qqUserNodeLA* qqUserListLA::findByQQId(int id) {
 	qqUserNodeLA* p = m_sentinel->getNext();
 	while (p != nullptr) {
-		if (p->getQQId() == id) {
+		if (p->getAppUserId() == id) {
 			return p;
 		}
 		p = p->getNext();
@@ -106,7 +108,7 @@ void qqUserListLA::deleteQQUser(qqUserNodeLA* qqUserToDelete) {
 void qqUserListLA::deleteQQUserByQQId(int id) {
 	qqUserNodeLA* p = m_sentinel;
 	while (p->getNext() != nullptr) {
-		if (p->getNext()->getQQId() == id) {
+		if (p->getNext()->getAppUserId() == id) {
 			qqUserNodeLA* q = p->getNext();
 			p->setNext(q->getNext());
 			delete q;
@@ -153,7 +155,10 @@ qqUserNodeLA::~qqUserNodeLA() {
 }
 
 void qqUserNodeLA::addQQFriendId(int id) {
-	m_qqFriendId.push_back(id);
+	userInfo* p = new userInfo;
+	p->friendId = id;
+	p->friendName = qqUserListLA::findByQQId(id)->getUserName();
+	m_qqFriendId.push_back(*p);
 }
 
 void qqUserNodeLA::addQQGroupId(int id) {
@@ -162,7 +167,7 @@ void qqUserNodeLA::addQQGroupId(int id) {
 
 void qqUserNodeLA::deleteQQFriendId(int id) {
 	for (int i = 0; i < m_qqFriendId.size(); i++) {
-		if (m_qqFriendId[i] == id) {
+		if (m_qqFriendId[i].friendId == id) {
 			m_qqFriendId.erase(m_qqFriendId.begin() + i);
 			return;
 		}
@@ -182,15 +187,15 @@ void qqUserNodeLA::setPlatformId(int id) {
 	m_platformId = id;
 }
 
-void qqUserNodeLA::setQQId(int id) {
+void qqUserNodeLA::setAppUserId(int id) {
 	m_qqId = id;
 }
 
-void qqUserNodeLA::setQQName(string name) {
+void qqUserNodeLA::setUserName(string name) {
 	m_qqName = name;
 }
 
-void qqUserNodeLA::setQQPassword(string password) {
+void qqUserNodeLA::setUserPasswd(string password) {
 	m_qqPassword = password;
 }
 
@@ -198,30 +203,30 @@ void qqUserNodeLA::setNext(qqUserNodeLA* next) {
 	m_next = next;
 }
 
-int qqUserNodeLA::getQQId() {
+int qqUserNodeLA::getAppUserId()const {
 	return m_qqId;
 }
 
-string qqUserNodeLA::getQQName() {
+string qqUserNodeLA::getUserName()const {
 	return m_qqName;
 }
 
-string qqUserNodeLA::getQQPassword() {
+string qqUserNodeLA::getUserPasswd()const {
 	return m_qqPassword;
 }
 
-vector<int> qqUserNodeLA::getQQFriendId() {
+vector<userInfo> qqUserNodeLA::getQQFriendInfo()const {
 	return m_qqFriendId;
 }
 
-vector<int> qqUserNodeLA::getQQGroupId() {
+vector<int> qqUserNodeLA::getQQGroupId()const {
 	return m_qqGroupId;
 }
 
-qqUserNodeLA* qqUserNodeLA::getNext() {
+qqUserNodeLA* qqUserNodeLA::getNext()const {
 	return m_next;
 }
 
-int qqUserNodeLA::getPlatformId() {
+int qqUserNodeLA::getPlatformId()const {
 	return m_platformId;
 }

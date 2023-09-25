@@ -166,11 +166,11 @@ string qqGroupNodeLA::getQQGroupName()const {
 	return m_qqGroupName;
 }
 
-vector<int> qqGroupNodeLA::getQQGroupMemberIDList()const {
+vector<userInfo> qqGroupNodeLA::getQQGroupMemberIDList()const {
 	return m_qqGroupMemberIDList;
 }
 
-vector<int> qqGroupNodeLA::getQQGroupAdminsIDList()const {
+vector<userInfo> qqGroupNodeLA::getQQGroupAdminsIDList()const {
 	return m_qqGroupAdminsIDList;
 }
 
@@ -178,8 +178,8 @@ vector<int> qqGroupNodeLA::getQQGroupAdminsIDList()const {
 
 qqGroupListLA::qqGroupListLA() {
 	m_sentinel = new qqGroupNodeLA();
-	//从文件data\\qqgroups.dat读取群列表
-	ifstream fin("data\\qqgroups.dat",ios::in,ios::binary);
+
+	ifstream fin("qqgroups.dat",ios::in,ios::binary);
 	if (!fin) {
 		cout << "qqgroups.dat not found!" << endl;
 		return;
@@ -225,7 +225,7 @@ qqGroupListLA::qqGroupListLA() {
 qqGroupListLA::~qqGroupListLA() {
 	saveGroupListData();
 	qqGroupNodeLA* p = m_sentinel->getNext();
-	while (p != m_sentinel) {
+	while (p != nullptr) {
 		qqGroupNodeLA* q = p->getNext();
 		delete p;
 		p = q;
@@ -234,13 +234,13 @@ qqGroupListLA::~qqGroupListLA() {
 }
 
 void qqGroupListLA::saveGroupListData() {
-	ofstream fout("data\\qqgroups.dat",ios::out,ios::binary);
+	ofstream fout("qqgroups.dat",ios::out,ios::binary);
 	if (!fout) {
 		cout << "qqgroups.dat not found!" << endl;
 		return;
 	}
 	qqGroupNodeLA* p = m_sentinel->getNext();
-	while (p != m_sentinel) {
+	while (p != nullptr) {
 		fout << p->getGroupId() << " " << p->getGroupName() << " " << p->getQQGroupOwnerID() << endl;
 		fout << p->isAllowJoin() << " " << p->isAllowSubgroup() << " " << p->isAllowSend() << " " << p->isAllowInvite() << endl;
 		fout << p->getQQGroupMemberCount() << endl;
@@ -274,7 +274,7 @@ void qqGroupListLA::removeGroup(qqGroupNodeLA* node) {
 
 qqGroupNodeLA* qqGroupListLA::findByGroupId(int qqGroupId) {
 	qqGroupNodeLA* p = m_sentinel->getNext();
-	while (p != m_sentinel) {
+	while (p != nullptr) {
 		if (p->getGroupId() == qqGroupId) {
 			return p;
 		}

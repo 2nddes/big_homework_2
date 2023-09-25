@@ -5,7 +5,7 @@ using namespace std;
 platformLA::platformLA() {
 	m_userList = new userListLA();
 	m_userList->loadUserList();//(从文件)加载用户列表
-	m_applicationList = new applicationListLA();//加载应用列表
+	m_applicationList = new applicationListLA(this);//加载应用列表
 	
 }
 
@@ -15,10 +15,11 @@ platformLA::~platformLA() {
 }
 
 void platformLA::run() {
-	applicationLA* app = m_applicationList->getSentinel();
 	
-	while(1)
-	{
+	while(1){
+
+		system("cls");
+		applicationLA* app = m_applicationList->getSentinel();
 		int i = 0;
 		while (app->hasNext()) {
 			app = app->getNext();
@@ -30,8 +31,19 @@ void platformLA::run() {
 		if (i == 0) {
 			return;
 		}
-		m_applicationList->at(i)->init(m_currentUser);//多态
+		if(m_applicationList->at(i)!=nullptr)
+			m_applicationList->at(i)->init(m_currentUser);//多态
+		else cout<<"no such app"<<endl;
 	}
 
 
+}
+
+void platformLA::findPlatformUser(int id) {
+	m_currentUser = m_userList->findByUserId(id);
+
+}
+
+userNodeLA* platformLA::addPlatformUser() {
+	return m_userList->addUser();
 }

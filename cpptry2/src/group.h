@@ -8,11 +8,11 @@ using namespace std;
 class groupNodeLA {
 protected:
 	
-	bool m_isAllowJoin;//是否允许加入
-	bool m_isAllowSubgroup;//是否允许创建子群
-	bool m_isAllowSend;//是否允许发送消息
-	bool m_isAllowInvite;//是否允许邀请
-	bool m_isAllowAdmins;//是否有管理员
+	bool m_isAllowJoin = true;//是否允许加入
+	bool m_isAllowSubgroup = true;//是否允许创建子群
+	bool m_isAllowSend = true;//是否允许发送消息
+	bool m_isAllowInvite = true;//是否允许邀请
+	bool m_isAllowAdmins = true;//是否有管理员
 
 public:
 	groupNodeLA() {};

@@ -19,27 +19,27 @@ userNodeLA::userNodeLA(string userName, int birth, string address, userNodeLA* n
 
 userNodeLA::~userNodeLA() {}
 
-int userNodeLA::getID() {
+int userNodeLA::getID()const {
 	return m_userId;
 }
 
-string userNodeLA::getUserName() {
+string userNodeLA::getUserName()const {
 	return m_userName;
 }
 
-int userNodeLA::getBirth() {
+int userNodeLA::getBirth()const {
 	return m_birth;
 }
 
-string userNodeLA::getAddress() {
+string userNodeLA::getAddress()const {
 	return m_address;
 }
 
-userNodeLA* userNodeLA::getNext() {
+userNodeLA* userNodeLA::getNext()const {
 	return m_next;
 }
 
-int userNodeLA::getTAge() {
+int userNodeLA::getTAge()const {
 	return 2018 - m_birth;
 	//TODO: calculate age
 }
@@ -60,7 +60,7 @@ void userNodeLA::setAddress(string address) {
 	m_address = address;
 }
 
-bool userNodeLA::isQQEnabled() {
+bool userNodeLA::isQQEnabled()const {
 	return m_qqActivationStatus;
 }
 
@@ -81,13 +81,19 @@ userListLA::~userListLA() {
 	}
 }
 
+userNodeLA* userListLA::addUser() {
+	userNodeLA* userToAdd = new userNodeLA("нч",20000101,"нч",m_sentinel->getNext());
+	m_sentinel->setNext(userToAdd);
+	return userToAdd;
+}
+
 userNodeLA* userListLA::addUser(string userName, int birth, string address) {
 	userNodeLA* userToAdd = new userNodeLA(userName, birth, address, m_sentinel->getNext());
 	m_sentinel->setNext(userToAdd);
 	return userToAdd;
 }
 
-userNodeLA* userListLA::findByUserName(string userName) {
+userNodeLA* userListLA::findByUserName(string userName)const {
 	userNodeLA* temp = m_sentinel->getNext();
 	while (temp != NULL) {
 		if (temp->getUserName() == userName) {
@@ -98,7 +104,7 @@ userNodeLA* userListLA::findByUserName(string userName) {
 	return NULL;
 }
 
-userNodeLA* userListLA::findByUserId(int id) {
+userNodeLA* userListLA::findByUserId(int id)const {
 	userNodeLA* temp = m_sentinel->getNext();
 	while (temp != NULL) {
 		if (temp->getID() == id) {
@@ -110,7 +116,7 @@ userNodeLA* userListLA::findByUserId(int id) {
 }
 
 void userListLA::loadUserList() {
-	ifstream fin("data\\userlist.dat", ios::in, ios::binary);
+	ifstream fin("userlist.dat", ios::in, ios::binary);
 	string userName;
 	int birth;
 	string address;
@@ -120,8 +126,8 @@ void userListLA::loadUserList() {
 	fin.close();
 }
 
-void userListLA::saveUserList() {
-	ofstream fout("data\\userlist.dat");
+void userListLA::saveUserList()const {
+	ofstream fout("userlist.dat");
 	userNodeLA* temp = m_sentinel->getNext();
 	while (temp != NULL) {
 		fout << temp->getUserName() 

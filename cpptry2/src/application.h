@@ -1,10 +1,9 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
-//应用类基类
 
-#include<string>
 #include"user.h"
-using namespace std;
+class platformLA;
+
 
 class applicationLA {
 protected:
@@ -33,6 +32,7 @@ private:
 
 public:
 	applicationListLA();
+	applicationListLA(platformLA* platform);
 	~applicationListLA();
 	
 	applicationLA* getSentinel();

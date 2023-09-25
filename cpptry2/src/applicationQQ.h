@@ -2,34 +2,61 @@
 #define APPLICATIONQQ_H
 
 #include"application.h"
-#include"qqfriend.h"
 #include"qquser.h"
 #include"qqgroup.h"
 
 class applicationQQLA :public applicationLA {
-private:
-	qqUserNodeLA* m_currentUser = nullptr;
-
-	qqGroupListLA* m_allQQGroupList = nullptr;
-
-	qqUserListLA* m_allQQUserList = nullptr;
 public:
 	applicationQQLA();
+	applicationQQLA(platformLA* platform);
 	virtual ~applicationQQLA();
 
-	//TODO: add member function here
 	string getAppName()const override;
 	int getAppVersion()const override;
 
 	//参数为平台用户,登录后返回qq用户,同时登录平台用户
 	qqUserNodeLA* loginPage(userNodeLA*& curPlatformUser);
 	qqUserNodeLA* registerPage(userNodeLA*& curPlatformUser);
+	
+	//TODO: add member function here
+	void mainPage();
 
+	void friendPage();
+	void searchFriendPage();
+	void addFriendPage();
+	void deleteFriendPage();
+
+	void groupPage();
+	void searchGroupPage();
+	void createGroupPage();
+	void joinGroupPage();
+	void quitGroupPage();
+
+	void chatInGroupPage(qqGroupNodeLA* groupPtr);
+	void chatWithFriendPage(qqUserNodeLA* friendPtr);
+	
+	void showQQFriendList(vector<userInfo> friendlist);
+	void showQQGroupList(vector<int> grouplist);
+	void showGroupMemberPage(int groupId);
+	void showGroupMemberPage(qqGroupNodeLA* groupPtr);
+	//TODO:显示聊天记录
+	//TODO:好友是否在线
+	bool sendMsgToFriend(qqUserNodeLA* friendPtr,const char* msg);
+	bool sendMsgToGroup(qqGroupNodeLA* groupPtr,const char* msg);
+	
 	//加载数据和初始界面
 	void init(userNodeLA*& curPlatformUser)override;
 	//清理加载的数据
 	void exit()override;
 
+private:
+	qqUserNodeLA* m_currentUser = nullptr;
+
+	qqGroupListLA* m_allQQGroupList = nullptr;
+
+	qqUserListLA* m_allQQUserList = nullptr;
+
+	platformLA* m_platform = nullptr;
 };
 
 #endif // !APPLICATIONQQ_H

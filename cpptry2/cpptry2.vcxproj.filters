@@ -39,17 +39,11 @@
     <ClCompile Include="src\user.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\friend.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\qqgroup.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\friend.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="src\qquser.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -60,9 +54,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\applicationQQ.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="src\qqfriend.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\qqgroup.h">

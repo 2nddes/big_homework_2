@@ -13,6 +13,17 @@ applicationListLA::applicationListLA() {
 
 }
 
+applicationListLA::applicationListLA(platformLA* platform) {
+	m_sentinel = new applicationLA();
+	applicationLA* app = m_sentinel;
+
+	app->m_next = new applicationQQLA(platform);
+	app = app->m_next;
+
+	//app->next = new applicationWeChatLA();
+	//app=app->next;
+}
+
 applicationListLA::~applicationListLA() {
 	while (m_sentinel != nullptr) {
 		applicationLA* appToDel = m_sentinel;
@@ -23,9 +34,10 @@ applicationListLA::~applicationListLA() {
 
 applicationLA* applicationListLA::at(int index) {
 	applicationLA* app = m_sentinel;
-	for (int i = 0; i < index; ++i) {
+	for (int i = 0; i < index&&app!=nullptr; ++i) {
 		app = app->m_next;
 	}
+
 	return app;
 }
 

@@ -1,66 +1,68 @@
 #ifndef QQUSER_H
 #define QQUSER_H
 
+#include<vector>
 #include"user.h"
 
-class qqUserNodeLA {
-private:
-	int m_platformId;//骞冲彴ID
-	int m_qqId;
-	string m_qqName;
-	string m_qqPassword;
+typedef struct userInfo{
+	int friendId;
+	string friendName;
+}userInfo;
 
-	vector<int> m_qqFriendId;
-	vector<int> m_qqGroupId;
-
-	qqUserNodeLA* m_next;
+class qqUserNodeLA:public userOfApp {
 public:
 	qqUserNodeLA();
 	qqUserNodeLA(int QQId, string name, string password,qqUserNodeLA* next);
 	~qqUserNodeLA();
 
-	int getPlatformId();
-	int getQQId(); 
-	string getQQName();
-	string getQQPassword();
+	int getPlatformId()const override;
+	int getAppUserId()const override;
+	string getUserName()const override;
+	string getUserPasswd()const override;
 
-	vector<int> getQQFriendId();
-	vector<int> getQQGroupId();
+	void setPlatformId(int platformId)override;
+	void setAppUserId(int qqId)override;
+	void setUserName(string qqName)override;
+	void setUserPasswd(string qqPassword)override;
 
-	void addQQFriendId(int friendId);
+	vector<userInfo> getQQFriendInfo()const;
+	vector<int> getQQGroupId()const;
+
+	void addQQFriendId(int friendId);//TODO:点对点通信
 	void addQQGroupId(int groupId);
 
-	void deleteQQFriendId(int friendId);
+	void deleteQQFriendId(int friendId);//TODO:点对点通信
 	void deleteQQGroupId(int groupId);
 
-
-	void setPlatformId(int platformId);
-	void setQQId(int qqId);
-	void setQQName(string qqName);
-	void setQQPassword(string qqPassword);
-
-
 	void setNext(qqUserNodeLA* next);
-	qqUserNodeLA* getNext();
+	qqUserNodeLA* getNext()const;
+private:
+	int m_qqId;//QQnumble
+	string m_qqName;
+	string m_qqPassword;
+
+	vector<userInfo> m_qqFriendId;
+	vector<int> m_qqGroupId;
+
+	qqUserNodeLA* m_next;
 };
 
 class qqUserListLA {
-private:
-	qqUserNodeLA* m_sentinel = nullptr;
-	static int m_qqUserCount;
-
 public:
 	qqUserListLA();
 	~qqUserListLA();
 	
-	qqUserNodeLA* findByQQId(int id);
-	qqUserNodeLA* findBySuperId(int id);
-	qqUserNodeLA* findBySuperPointer(userNodeLA* userToFind);
+	static qqUserNodeLA* findByQQId(int id);
+	static qqUserNodeLA* findBySuperId(int id);
+	static qqUserNodeLA* findBySuperPointer(userNodeLA* userToFind);
 
-	qqUserNodeLA* addQQUser(string qqName,string qqPassword);
-	void deleteQQUser(qqUserNodeLA* qqUserToDelete);
-	void deleteQQUserByQQId(int qqId);
-	void saveQQUserList();
+	static qqUserNodeLA* addQQUser(string qqName,string qqPassword);
+	static void deleteQQUser(qqUserNodeLA* qqUserToDelete);
+	static void deleteQQUserByQQId(int qqId);
+	static void saveQQUserList();
+private:
+	static qqUserNodeLA* m_sentinel;
+	static int m_qqUserCount;
 };
 
 #endif // !QQUSER_H
