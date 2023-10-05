@@ -24,13 +24,14 @@ protected:
 class userNodeLA {
 public:
 	userNodeLA();
-	userNodeLA(string userName, int birth, string address, userNodeLA* next);
+	userNodeLA(int userID, string userName, int birth, string address, userNodeLA* next);
+	userNodeLA(int userID, string userName, int birth, string address, bool qqActivationStatus, userNodeLA* next);
 	virtual ~userNodeLA();
 	
 	int getID()const;//获取用户ID	
-	string getUserName()const;//获取用户名
 	int getBirth()const;//获取生日
 	int getTAge()const;//获取T龄
+	string getUserName()const;//获取用户名
 	string getAddress()const;//获取地址
 	userNodeLA* getNext()const;//获取下一个用户
 
@@ -43,15 +44,13 @@ public:
 	void setQQStatus(bool status);//设置qq服务开通状态
 
 protected:
-	int m_userId;//用户ID,唯一标识
-	string m_userName = "无";//用户名
-	int m_birth = 20000101;//生日
-	int m_TAge = 0;//T龄
-	string m_address = "无";//地址
-
-	bool m_qqActivationStatus = false;//qq服务开通状态
-	
-	static int m_userCount;//用户总数
+	int         m_userId;//用户ID,唯一标识
+	string      m_userName = "无";//用户名
+	int         m_birth = 20000101;//生日
+	int         m_TAge = 0;//T龄
+	string      m_address = "无";//地址
+			    
+	bool        m_qqActivationStatus = false;//qq服务开通状态
 
 	userNodeLA* m_next = nullptr;
 };
@@ -70,6 +69,8 @@ public:
 	userNodeLA* findByUserName(string userName)const;
 private:
 	userNodeLA* m_sentinel = nullptr;
+
+	int m_userCount = 0;
 
 };
 #endif // !USER_H

@@ -1,14 +1,18 @@
 #include<fstream>
 #include"qquser.h"
+#include"utils.h"
 
-int qqUserListLA::m_qqUserCount = 0;
 qqUserNodeLA* qqUserListLA::m_sentinel = nullptr;
 
 qqUserListLA::qqUserListLA() {
-	ifstream ifs;
-	ifs.open("qqusers.dat", ios::in, ios::binary);
+	m_sentinel = new qqUserNodeLA(0, "sentinel", "sentinel", nullptr);
+
+	ifstream ifs("QQ\\qqusers.dat", ios::in);
+	if (!ifs) {
+		m_qqUserCount = 0;
+		return;
+	}
 	ifs >> m_qqUserCount;
-	m_sentinel = new qqUserNodeLA(0, "sentinel", "sentinel",nullptr);
 	int platformId, qqId, qqFriendIdSize, qqGroupIdSize;
 	string qqName, qqPassword;
 	while (ifs >> platformId >> qqId >> qqName >> qqPassword >> qqFriendIdSize) {
@@ -31,11 +35,11 @@ qqUserListLA::qqUserListLA() {
 	ifs.close();
 }
 
-void qqUserListLA::saveQQUserList() {
+void qqUserListLA::saveQQUserListData() {
 	ofstream ofs;
-	ofs.open("qqusers.dat", ios::out, ios::binary);//清除原有数据
+	ofs.open("QQ\\qqusers.dat", ios::out);//清除原有数据
 	qqUserNodeLA* p = m_sentinel->getNext();
-	ofs << m_qqUserCount << endl;
+	ofs << m_qqUserCount << " ";
 	while (p != nullptr) {
 		ofs << p->getPlatformId()
 			<< p->getAppUserId() 
@@ -50,7 +54,7 @@ void qqUserListLA::saveQQUserList() {
 		for (int i = 0; i < p->getQQGroupId().size(); i++) {
 			ofs << " " << p->getQQGroupId()[i];
 		}
-		ofs << endl;
+		ofs << " ";
 		p = p->getNext();
 	}
 	ofs.close();
@@ -132,6 +136,8 @@ qqUserNodeLA* qqUserListLA::findBySuperPointer(userNodeLA* userToFind) {
 
 ////////////////////////////////////////////////////
 qqUserNodeLA::qqUserNodeLA() {
+	string fileName = "QQ\\qquser" + to_string(m_qqId) + ".dat";
+
 	m_qqId = 0;
 	m_qqName = "";
 	m_qqPassword = "";
@@ -152,6 +158,24 @@ qqUserNodeLA::qqUserNodeLA(int QQid, string name, string password, qqUserNodeLA*
 qqUserNodeLA::~qqUserNodeLA() {
 	m_qqFriendId.clear();
 	m_qqGroupId.clear();
+}
+
+bool qqUserNodeLA::isFriend(int friendId) const{
+	for (int i = 0; i < m_qqFriendId.size(); i++) {
+		if (m_qqFriendId[i].friendId == friendId) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool qqUserNodeLA::isFriend(qqUserNodeLA* friendPtr) const{
+	for (int i = 0; i < m_qqFriendId.size(); i++) {
+		if (m_qqFriendId[i].friendId == friendPtr->getAppUserId()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void qqUserNodeLA::addQQFriendId(int id) {
@@ -224,6 +248,9 @@ vector<int> qqUserNodeLA::getQQGroupId()const {
 }
 
 qqUserNodeLA* qqUserNodeLA::getNext()const {
+	if (this == nullptr) {
+		return nullptr;
+	}
 	return m_next;
 }
 

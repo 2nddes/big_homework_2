@@ -1,3 +1,4 @@
+#include"utils.h"
 #include<iostream>
 #include"platform.h"
 using namespace std;
@@ -17,7 +18,6 @@ platformLA::~platformLA() {
 void platformLA::run() {
 	
 	while(1){
-
 		system("cls");
 		applicationLA* app = m_applicationList->getSentinel();
 		int i = 0;
@@ -28,14 +28,19 @@ void platformLA::run() {
 		}
 		cout << "choose app to launch(input 0 to exit)" << endl;
 		cin >> i;
+		refreshInput();
 		if (i == 0) {
+			m_userList->saveUserList();
 			return;
 		}
-		if(m_applicationList->at(i)!=nullptr)
+		if (m_applicationList->at(i) != nullptr){
 			m_applicationList->at(i)->init(m_currentUser);//∂‡Ã¨
-		else cout<<"no such app"<<endl;
+		}
+		else {
+			cout << "no such app" << endl;
+			system("pause");
+		}
 	}
-
 
 }
 

@@ -1,3 +1,5 @@
+#include"utils.h"
+#include"application.h"
 #include"applicationQQ.h"
 
 /////////////////appList///////////////
@@ -60,6 +62,9 @@ bool applicationLA::hasNext() {
 }
 
 applicationLA* applicationLA::getNext() {
+	if (this == nullptr) {
+		return nullptr;
+	}
 	return m_next;
 }
 

@@ -4,6 +4,11 @@
 #include"application.h"
 #include"qquser.h"
 #include"qqgroup.h"
+#include"utils.h"
+
+#include<Windows.h>
+#include<io.h>
+#include<direct.h>
 
 class applicationQQLA :public applicationLA {
 public:
@@ -31,6 +36,9 @@ public:
 	void createGroupPage();
 	void joinGroupPage();
 	void quitGroupPage();
+	void quitGroupPage(qqGroupNodeLA* groupPtr);
+	void setGroupConfigPage(qqGroupNodeLA* groupPtr);
+	void inviteFriendInPage(qqGroupNodeLA* groupPtr);
 
 	void chatInGroupPage(qqGroupNodeLA* groupPtr);
 	void chatWithFriendPage(qqUserNodeLA* friendPtr);
@@ -40,7 +48,9 @@ public:
 	void showGroupMemberPage(int groupId);
 	void showGroupMemberPage(qqGroupNodeLA* groupPtr);
 	//TODO:显示聊天记录
-	//TODO:好友是否在线
+
+	void applyFriend(qqUserNodeLA* user,qqUserNodeLA* friendToAdd);
+
 	bool sendMsgToFriend(qqUserNodeLA* friendPtr,const char* msg);
 	bool sendMsgToGroup(qqGroupNodeLA* groupPtr,const char* msg);
 	
@@ -50,13 +60,14 @@ public:
 	void exit()override;
 
 private:
-	qqUserNodeLA* m_currentUser = nullptr;
+
+	qqUserNodeLA*  m_currentUser = nullptr;
 
 	qqGroupListLA* m_allQQGroupList = nullptr;
 
-	qqUserListLA* m_allQQUserList = nullptr;
+	qqUserListLA*  m_allQQUserList = nullptr;
 
-	platformLA* m_platform = nullptr;
+	platformLA*    m_platform = nullptr;
 };
 
 #endif // !APPLICATIONQQ_H

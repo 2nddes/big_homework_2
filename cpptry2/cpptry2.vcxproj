@@ -141,6 +141,7 @@
     <ClCompile Include="src\platform.cpp" />
     <ClCompile Include="src\user.cpp" />
     <ClCompile Include="src\user.h" />
+    <ClCompile Include="src\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\application.h" />
@@ -148,6 +149,7 @@
     <ClInclude Include="src\platform.h" />
     <ClInclude Include="src\qqgroup.h" />
     <ClInclude Include="src\qquser.h" />
+    <ClInclude Include="src\utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

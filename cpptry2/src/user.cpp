@@ -1,20 +1,34 @@
+#include"utils.h"
 #include"user.h"
 #include<fstream>
-
-int userNodeLA::m_userCount = 0;
+#include<iostream>
 
 userNodeLA::userNodeLA() {
-	m_userId = ++m_userCount;
+	m_userName = "无";
+	m_birth = 20000101;
+	m_address = "无";
+	m_next = nullptr;
+	m_userId = -1;
 }
 
-userNodeLA::userNodeLA(string userName, int birth, string address, userNodeLA* next) {
-	m_userId = ++m_userCount;
+userNodeLA::userNodeLA(int userID, string userName, int birth, string address, userNodeLA* next) {
+	m_userId = userID;
 	m_userName = userName;
 	m_birth = birth;
 	m_address = address;
 	m_next = next;
-	m_userId = m_userCount++;
+	m_userId = userID;
 	m_qqActivationStatus = false;
+}
+
+userNodeLA::userNodeLA(int userID, string userName, int birth, string address, bool qqActivationStatus, userNodeLA* next) {
+	m_userId = userID;
+	m_userName = userName;
+	m_birth = birth;
+	m_address = address;
+	m_next = next;
+	m_userId = userID;
+	m_qqActivationStatus = qqActivationStatus;
 }
 
 userNodeLA::~userNodeLA() {}
@@ -82,14 +96,16 @@ userListLA::~userListLA() {
 }
 
 userNodeLA* userListLA::addUser() {
-	userNodeLA* userToAdd = new userNodeLA("无",20000101,"无",m_sentinel->getNext());
+	userNodeLA* userToAdd = new userNodeLA(-1, "无", 20000101, "无", false, m_sentinel->getNext());
 	m_sentinel->setNext(userToAdd);
+	saveUserList();
 	return userToAdd;
 }
 
 userNodeLA* userListLA::addUser(string userName, int birth, string address) {
-	userNodeLA* userToAdd = new userNodeLA(userName, birth, address, m_sentinel->getNext());
+	userNodeLA* userToAdd = new userNodeLA(m_userCount, userName, birth, address, false, m_sentinel->getNext());
 	m_sentinel->setNext(userToAdd);
+	saveUserList();
 	return userToAdd;
 }
 
@@ -116,24 +132,47 @@ userNodeLA* userListLA::findByUserId(int id)const {
 }
 
 void userListLA::loadUserList() {
-	ifstream fin("userlist.dat", ios::in, ios::binary);
+	ifstream fin("userlist.dat", ios::in);
+	if (!fin) {
+		cout << "userlist.dat not found!" << endl;
+		return;
+	}
+
+	int userId;
 	string userName;
 	int birth;
+	int TAge;
 	string address;
-	while (fin >> userName >> birth >> address) {
-		addUser(userName, birth, address);
+	bool qqActivationStatus;
+
+	fin >> m_userCount;
+	while (fin >> userId >> userName >> birth >> TAge >> address >> qqActivationStatus) {
+		userNodeLA* userToAdd = new userNodeLA(userId, userName, birth, address, qqActivationStatus, m_sentinel->getNext());
+		m_sentinel->setNext(userToAdd);
 	}
+
 	fin.close();
 }
 
 void userListLA::saveUserList()const {
-	ofstream fout("userlist.dat");
+	ofstream fout("userlist.dat", ios::out);
+	if (!fout) {
+		cout << "userlist.dat not found!" << endl;
+		return;
+	}
+
+	fout << m_userCount;
 	userNodeLA* temp = m_sentinel->getNext();
+
 	while (temp != NULL) {
-		fout << temp->getUserName() 
-			<< " " << temp->getBirth() 
-			<< " " << temp->getAddress() << endl;
+		fout << " " << temp->getID()
+			<< " " << temp->getUserName()
+			<< " " << temp->getBirth()
+			<< " " << temp->getTAge()
+			<< " " << temp->getAddress()
+			<< " " << temp->isQQEnabled();
 		temp = temp->getNext();
 	}
+
 	fout.close();
 }

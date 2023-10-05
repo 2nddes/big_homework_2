@@ -10,7 +10,7 @@ public:
 	qqGroupNodeLA(int qqGroupId, string qqGroupName, int qqGroupOwnerID, qqGroupNodeLA* next);
 	virtual ~qqGroupNodeLA();
 
-	int getGroupId()const override;
+	int    getGroupId()const override;
 	string getGroupName()const override;
 
 	bool isAdministrator(int userId)const;
@@ -26,6 +26,7 @@ public:
 	void addMember(int userId)override;//添加成员//TODO
 	void changeOwner(int userId)override;
 	void removeMember(int userId)override;//注意是否为最后一人
+	void removeMember(vector<int> userIdList);//注意是否为最后一人
 	void setQQGroupId(int qqGroupId);
 	void setQQGroupName(string qqGroupName);
 	void addQQGroupAdmin(int userId);
@@ -37,25 +38,26 @@ public:
 	void setQQGroupIsAllowAdmins(bool isAllowAdmins);
 
 	int getQQGroupId()const;
-	string getQQGroupName()const;
-	vector<userInfo> getQQGroupMemberIDList()const;
-	int getQQGroupOwnerID()const;
-	vector<userInfo> getQQGroupAdminsIDList()const;
 	int getQQGroupMemberCount()const;
+	int getQQGroupOwnerID()const;
+	string getQQGroupName()const;
+	vector<userInfo> getQQGroupMemberInfoList()const;
+	vector<userInfo> getQQGroupAdminsInfoList()const;
 
 
 
 	void setNext(qqGroupNodeLA* next);
 	qqGroupNodeLA* getNext();
 private:
-	int m_qqGroupId = 0;//群ID,唯一标识
-	string m_qqGroupName = "无";//群名
-	vector<userInfo> m_qqGroupMemberIDList;//群成员信息列表
-	int m_qqGroupOwnerID = 0;//群主ID
+	int              m_qqGroupId = 0;//群ID,唯一标识
+	string           m_qqGroupName = "无";//群名
+	int              m_qqGroupOwnerID = 0;//群主ID
+	vector<userInfo> m_qqGroupMemberInfoList;//群成员信息列表,包括管理员群主
 	vector<userInfo> m_qqGroupAdminsIDList;	//管理员信息列表
 
-	static int m_qqGroupCount;//群总数
-	qqGroupNodeLA* m_next = nullptr;
+	qqGroupNodeLA*   m_next = nullptr;
+
+	static int       m_qqGroupCount;//群总数
 
 	friend class qqGroupListLA;
 };
@@ -67,8 +69,9 @@ public:
 
 	void saveGroupListData();
 	void addGroup(qqGroupNodeLA* node);
-	qqGroupNodeLA* addGroup(string qqGroupName, int qqGroupOwnerID);
 	void removeGroup(qqGroupNodeLA* node);
+
+	qqGroupNodeLA* addGroup(string qqGroupName, int qqGroupOwnerID);
 	qqGroupNodeLA* findByGroupId(int qqGroupId);
 	qqGroupNodeLA* getSentinel();
 
