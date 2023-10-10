@@ -82,6 +82,16 @@ void userNodeLA::setQQStatus(bool status) {
 	m_qqActivationStatus = status;
 }
 
+void userNodeLA::setPhone(string phoneNumber)
+{
+	m_phoneNumber = phoneNumber;
+}
+
+void userNodeLA::setEmail(string email)
+{
+	m_email = email;
+}
+
 userListLA::userListLA() {
 	m_sentinel = new userNodeLA();
 }
@@ -96,14 +106,14 @@ userListLA::~userListLA() {
 }
 
 userNodeLA* userListLA::addUser() {
-	userNodeLA* userToAdd = new userNodeLA(-1, "无", 20000101, "无", false, m_sentinel->getNext());
+	userNodeLA* userToAdd = new userNodeLA(m_userCount++, "无", 20000101, "无", false, m_sentinel->getNext());
 	m_sentinel->setNext(userToAdd);
 	saveUserList();
 	return userToAdd;
 }
 
 userNodeLA* userListLA::addUser(string userName, int birth, string address) {
-	userNodeLA* userToAdd = new userNodeLA(m_userCount, userName, birth, address, false, m_sentinel->getNext());
+	userNodeLA* userToAdd = new userNodeLA(m_userCount++, userName, birth, address, false, m_sentinel->getNext());
 	m_sentinel->setNext(userToAdd);
 	saveUserList();
 	return userToAdd;
@@ -161,16 +171,16 @@ void userListLA::saveUserList()const {
 		return;
 	}
 
-	fout << m_userCount;
+	fout << m_userCount << " ";
 	userNodeLA* temp = m_sentinel->getNext();
 
 	while (temp != NULL) {
-		fout << " " << temp->getID()
-			<< " " << temp->getUserName()
-			<< " " << temp->getBirth()
-			<< " " << temp->getTAge()
-			<< " " << temp->getAddress()
-			<< " " << temp->isQQEnabled();
+		fout << temp->getID() << " "
+			 << temp->getUserName()<< " "
+			 << temp->getBirth()<< " "
+			 << temp->getTAge()<< " "
+			 << temp->getAddress()<< " "
+			 << temp->isQQEnabled()<< " ";
 		temp = temp->getNext();
 	}
 

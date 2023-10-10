@@ -2,8 +2,6 @@
 #include"qquser.h"
 #include"utils.h"
 
-qqUserNodeLA* qqUserListLA::m_sentinel = nullptr;
-
 qqUserListLA::qqUserListLA() {
 	m_sentinel = new qqUserNodeLA(0, "sentinel", "sentinel", nullptr);
 
@@ -13,16 +11,21 @@ qqUserListLA::qqUserListLA() {
 		return;
 	}
 	ifs >> m_qqUserCount;
-	int platformId, qqId, qqFriendIdSize, qqGroupIdSize;
-	string qqName, qqPassword;
+	int platformId, qqId, qqFriendIdSize, qqGroupIdSize, friendId;
+	string qqName, qqPassword, friendName;
 	while (ifs >> platformId >> qqId >> qqName >> qqPassword >> qqFriendIdSize) {
 		qqUserNodeLA* qqUserToAdd = new qqUserNodeLA(qqId, qqName, qqPassword, m_sentinel->getNext());
+		
 		qqUserToAdd->setPlatformId(platformId);
 		qqUserToAdd->setAppUserId(qqId);
+		
 		for (int i = 0; i < qqFriendIdSize; i++) {
-				int friendId;
 				ifs >> friendId;
-				qqUserToAdd->addQQFriendId(friendId);
+				ifs >> friendName;
+				userInfo friendInfo;
+				friendInfo.friendId = friendId;
+				friendInfo.friendName = friendName;
+				qqUserToAdd->addQQFriendInfo(friendInfo);
 			}
 		ifs >> qqGroupIdSize;
 		for (int i = 0; i < qqGroupIdSize; i++) {
@@ -41,20 +44,22 @@ void qqUserListLA::saveQQUserListData() {
 	qqUserNodeLA* p = m_sentinel->getNext();
 	ofs << m_qqUserCount << " ";
 	while (p != nullptr) {
-		ofs << p->getPlatformId()
-			<< p->getAppUserId() 
-			<< " " << p->getUserName() 
-			<< " " << p->getUserPasswd()
-			<< " " << p->getQQFriendInfo().size();
+		ofs << p->getPlatformId() << " "
+			<< p->getAppUserId() << " "
+			<< p->getUserName() << " "
+			<< p->getUserPasswd()<< " "
+			//用户好友的ID大小
+			<< p->getQQFriendInfo().size() << " ";
+		//用户好友的ID和好友备注
 		for (int i = 0; i < p->getQQFriendInfo().size(); i++) {
-			ofs << " " << p->getQQFriendInfo()[i].friendId;
-			ofs << " " << p->getQQFriendInfo()[i].friendName;
+			ofs << p->getQQFriendInfo()[i].friendId << " ";
+			ofs << p->getQQFriendInfo()[i].friendName << " ";
 		}
-		ofs << " " << p->getQQGroupId().size();
+		ofs << p->getQQGroupId().size() << " ";
+		//用户所在群的ID
 		for (int i = 0; i < p->getQQGroupId().size(); i++) {
-			ofs << " " << p->getQQGroupId()[i];
+			ofs << p->getQQGroupId()[i] << " ";
 		}
-		ofs << " ";
 		p = p->getNext();
 	}
 	ofs.close();
@@ -93,9 +98,8 @@ qqUserNodeLA* qqUserListLA::findBySuperId(int id) {
 }
 
 qqUserNodeLA* qqUserListLA::addQQUser(string name, string password) {
-	qqUserNodeLA* qqUserToAdd = new qqUserNodeLA(m_qqUserCount, name, password, m_sentinel->getNext());
+	qqUserNodeLA* qqUserToAdd = new qqUserNodeLA(++m_qqUserCount, name, password, m_sentinel->getNext());
 	m_sentinel->setNext(qqUserToAdd);
-	m_qqUserCount++;
 	return qqUserToAdd;
 }
 
@@ -136,8 +140,6 @@ qqUserNodeLA* qqUserListLA::findBySuperPointer(userNodeLA* userToFind) {
 
 ////////////////////////////////////////////////////
 qqUserNodeLA::qqUserNodeLA() {
-	string fileName = "QQ\\qquser" + to_string(m_qqId) + ".dat";
-
 	m_qqId = 0;
 	m_qqName = "";
 	m_qqPassword = "";
@@ -170,7 +172,7 @@ bool qqUserNodeLA::isFriend(int friendId) const{
 }
 
 bool qqUserNodeLA::isFriend(qqUserNodeLA* friendPtr) const{
-	for (int i = 0; i < m_qqFriendId.size(); i++) {
+	for (size_t i = 0; i < m_qqFriendId.size(); i++) {
 		if (m_qqFriendId[i].friendId == friendPtr->getAppUserId()) {
 			return true;
 		}
@@ -178,11 +180,18 @@ bool qqUserNodeLA::isFriend(qqUserNodeLA* friendPtr) const{
 	return false;
 }
 
-void qqUserNodeLA::addQQFriendId(int id) {
-	userInfo* p = new userInfo;
-	p->friendId = id;
-	p->friendName = qqUserListLA::findByQQId(id)->getUserName();
-	m_qqFriendId.push_back(*p);
+bool qqUserNodeLA::isAddedGroup(int groupId) const
+{
+	for (int i = 0; i < m_qqGroupId.size(); i++) {
+		if (m_qqGroupId[i] == groupId) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void qqUserNodeLA::addQQFriendInfo(userInfo friendInfo) {
+	m_qqFriendId.push_back(friendInfo);
 }
 
 void qqUserNodeLA::addQQGroupId(int id) {

@@ -20,8 +20,8 @@ public:
 
 	virtual string getAppName()const;
 	virtual int getAppVersion()const;
-	virtual void init(userNodeLA * & curPlatformUser);//初始化(比如文件)
-	virtual void draw();
+	virtual bool init(userNodeLA * & curPlatformUser);//初始化(比如文件)
+	virtual void mainPage();//主界面
 	virtual void exit();
 
 };
@@ -30,6 +30,7 @@ class applicationListLA {
 private:
 	applicationLA* m_sentinel;
 
+	
 public:
 	applicationListLA();
 	applicationListLA(platformLA* platform);
@@ -37,5 +38,7 @@ public:
 	
 	applicationLA* getSentinel();
 	applicationLA* at(int index);
+	void showAllApp();
+	int appCount();
 };
 #endif // !APPLICATION_H

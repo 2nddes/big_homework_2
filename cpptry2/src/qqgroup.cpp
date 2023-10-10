@@ -3,14 +3,14 @@
 #include<fstream>
 #include<iostream>
 
-int qqGroupNodeLA::m_qqGroupCount = 0;
-
 qqGroupNodeLA::qqGroupNodeLA() {
-	m_qqGroupId = ++m_qqGroupCount;
+	m_qqGroupId = 0;
 	string m_qqGroupName = "нч";
 	m_qqGroupMemberInfoList.clear();
 	m_qqGroupOwnerID = 0;
 	m_qqGroupAdminsIDList.clear();
+	m_next = nullptr;
+	m_qqGroupInvitedIDList.clear();
 	m_isAllowAdmins = true;
 	m_isAllowInvite = true;
 	m_isAllowJoin = true;
@@ -33,6 +33,7 @@ qqGroupNodeLA::qqGroupNodeLA(int qqGroupId, string qqGroupName, int qqGroupOwner
 qqGroupNodeLA::~qqGroupNodeLA() {
 	m_qqGroupMemberInfoList.clear();
 	m_qqGroupAdminsIDList.clear();
+	m_qqGroupInvitedIDList.clear();
 }
 
 int qqGroupNodeLA::getGroupId()const {
@@ -76,13 +77,17 @@ void qqGroupNodeLA::addQQGroupAdmin(int userId) {
 	m_qqGroupAdminsIDList.push_back(adminInfo);
 }
 
+void qqGroupNodeLA::addRequest(userInfo userinfo){
+	m_qqGroupInvitedIDList.push_back(userinfo);
+}
+
 void qqGroupNodeLA::changeOwner(int userId) {
 	m_qqGroupOwnerID = userId;
 }
 
 void qqGroupNodeLA::removeMember(int userId) {
 	for (auto it = m_qqGroupMemberInfoList.begin(); it != m_qqGroupMemberInfoList.end(); it++) {
-		if (it->friendId == userId) {
+		if (userId == it->friendId) {
 			m_qqGroupMemberInfoList.erase(it);
 			return;
 		}
@@ -176,7 +181,7 @@ int qqGroupNodeLA::getQQGroupOwnerID()const {
 }
 
 int qqGroupNodeLA::getQQGroupMemberCount()const {
-	return m_qqGroupMemberInfoList.size();
+	return (int)m_qqGroupMemberInfoList.size();
 }
 
 int qqGroupNodeLA::getQQGroupId()const {
@@ -272,21 +277,29 @@ void qqGroupListLA::saveGroupListData() {
 		cout << "qqgroups.dat not found!" << endl;
 		return;
 	}
-
+	fout << m_qqGroupCount << " ";
 	qqGroupNodeLA* p = m_sentinel->getNext();
 	while (p != nullptr) {
-		fout << p->getGroupId() << " " << p->getGroupName() << " " << p->getQQGroupOwnerID() << endl;
-		fout << p->isAllowJoin() << " " << p->isAllowSubgroup() << " " << p->isAllowSend() << " " << p->isAllowInvite() << endl;
-		fout << p->getQQGroupMemberCount() << endl;
-		for (auto it = p->getQQGroupMemberInfoList().begin(); it != p->getQQGroupMemberInfoList().end(); it++) {
-			fout << it->friendId << " " << it->friendName << " ";
+		fout << p->getGroupId() << " " 
+			<< p->getGroupName() << " " 
+			<< p->getQQGroupOwnerID() << " " 
+			<< p->isAllowJoin() << " " 
+			<< p->isAllowSubgroup() << " " 
+			<< p->isAllowSend() << " " 
+			<< p->isAllowInvite() << " " 
+
+			<< p->getQQGroupMemberCount() << " ";
+		vector<userInfo> memberList = p->getQQGroupMemberInfoList();
+		for (int i = 0; i < memberList.size();i++) {
+			fout << memberList[i].friendId << " " 
+				<< memberList[i].friendName << " ";
 		}
-		fout << endl;
 		fout << p->getQQGroupAdminsInfoList().size() << endl;
-		for (auto it = p->getQQGroupAdminsInfoList().begin(); it != p->getQQGroupAdminsInfoList().end(); it++) {
-			fout << it->friendId << " " << it->friendName << " ";
+		vector<userInfo> adminsList = p->getQQGroupAdminsInfoList();
+		for (int i = 0; i < adminsList.size();i++) {
+			fout << adminsList[i].friendId << " " 
+				<< adminsList[i].friendName << " ";
 		}
-		fout << endl;
 		p = p->getNext();
 	}
 	fout.close();
@@ -298,8 +311,9 @@ void qqGroupListLA::addGroup(qqGroupNodeLA* node) {
 }
 
 qqGroupNodeLA* qqGroupListLA::addGroup(string qqGroupName, int qqGroupOwnerID) {
-	qqGroupNodeLA* p = new qqGroupNodeLA();
+	qqGroupNodeLA* p = new qqGroupNodeLA(m_qqGroupCount++, qqGroupName, qqGroupOwnerID, m_sentinel->getNext());
 	p->setQQGroupName(qqGroupName);
+	p->addMember(qqGroupOwnerID);
 	p->changeOwner(qqGroupOwnerID);
 	addGroup(p);
 	return p;

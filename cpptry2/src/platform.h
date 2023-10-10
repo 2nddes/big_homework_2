@@ -20,5 +20,7 @@ public:
 	void run();
 	void findPlatformUser(int id);
 	userNodeLA* addPlatformUser();
+	void setPlatformUserInfo();
+	void logOut();
 };
 #endif // !PLATFORM_H

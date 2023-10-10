@@ -5,8 +5,8 @@
 #include"user.h"
 
 typedef struct userInfo{
-	int friendId;
-	string friendName;
+	int friendId{};
+	string friendName{};
 }userInfo;
 
 class qqUserNodeLA:public userOfApp {
@@ -17,6 +17,7 @@ public:
 
 	bool isFriend(int friendId)const;
 	bool isFriend(qqUserNodeLA* friendPtr)const;
+	bool isAddedGroup(int groupId)const;
 
 	int getPlatformId()const override;
 	vector<userInfo> getQQFriendInfo()const;
@@ -31,7 +32,7 @@ public:
 	void setUserName(string qqName)override;
 	void setUserPasswd(string qqPassword)override;
 
-	void addQQFriendId(int friendId);//TODO:点对点通信
+	void addQQFriendInfo(userInfo friendInfo);
 	void addQQGroupId(int groupId);
 
 	void deleteQQFriendId(int friendId);//TODO:点对点通信
@@ -40,15 +41,15 @@ public:
 	void setNext(qqUserNodeLA* next);
 	qqUserNodeLA* getNext()const;
 private:
-	int              m_qqId;//QQnumble
-	string           m_qqName;
-	string           m_qqPassword;
+	int              m_qqId = 0;//QQnumble
+	string           m_qqName = "无";
+	string           m_qqPassword = "0";
 
 	vector<userInfo> m_qqFriendId;
 	vector<int>      m_qqGroupId;
 
 
-	qqUserNodeLA*    m_next;
+	qqUserNodeLA*    m_next = nullptr;
 };
 
 class qqUserListLA {
@@ -56,17 +57,17 @@ public:
 	qqUserListLA();
 	~qqUserListLA();
 	
-	static qqUserNodeLA* findByQQId(int id);
-	static qqUserNodeLA* findBySuperId(int id);
-	static qqUserNodeLA* findBySuperPointer(userNodeLA* userToFind);
+	qqUserNodeLA* findByQQId(int id);
+	qqUserNodeLA* findBySuperId(int id);
+	qqUserNodeLA* findBySuperPointer(userNodeLA* userToFind);
 
 	qqUserNodeLA* addQQUser(string qqName,string qqPassword);
 	void deleteQQUser(qqUserNodeLA* qqUserToDelete);
 	void deleteQQUserByQQId(int qqId);
 	void saveQQUserListData();
 private:
-	int                  m_qqUserCount;
-	static qqUserNodeLA* m_sentinel;
+	int           m_qqUserCount = 0;
+	qqUserNodeLA* m_sentinel = nullptr;
 };
 
 #endif // !QQUSER_H

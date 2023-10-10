@@ -1,6 +1,10 @@
 #include"utils.h"
 #include"application.h"
 #include"applicationQQ.h"
+#include<iostream>
+#include<iomanip>
+
+using namespace std;
 
 /////////////////appList///////////////
 applicationListLA::applicationListLA() {
@@ -43,6 +47,38 @@ applicationLA* applicationListLA::at(int index) {
 	return app;
 }
 
+void applicationListLA::showAllApp()
+{
+	applicationLA* app = this->getSentinel();
+	int i = 0;
+
+	while (app->hasNext()) {
+		app = app->getNext();
+		cout << "| ";
+		cout << setw(2)
+			<< setfill('0')
+			<< setiosflags(ios::right)
+			<< ++i << " ||";
+		cout << resetiosflags(ios::right);
+		cout << setw(26)
+			<< setfill(' ')
+			<< setiosflags(ios::left)
+			<< app->getAppName() << "|" << endl;
+	}
+}
+
+int applicationListLA::appCount()
+{
+	applicationLA* app = this->getSentinel();
+	int i = 0;
+
+	while (app->hasNext()) {
+		app = app->getNext();
+		++i;
+	}
+	return i;
+}
+
 applicationLA* applicationListLA::getSentinel() {
 	return m_sentinel;
 }
@@ -76,12 +112,13 @@ int applicationLA::getAppVersion()const {
 	return m_appVersion;
 }
 
-void applicationLA::init(userNodeLA*& curPlatformUser) {
+bool applicationLA::init(userNodeLA*& curPlatformUser) {
 	throw "非法调用基application的init()";
 }
 
-void applicationLA::draw() {
-	throw "非法调用基application的draw()";
+void applicationLA::mainPage()
+{
+	throw "非法调用基application的mainPage()";
 }
 
 void applicationLA::exit() {

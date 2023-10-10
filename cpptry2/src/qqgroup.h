@@ -30,6 +30,7 @@ public:
 	void setQQGroupId(int qqGroupId);
 	void setQQGroupName(string qqGroupName);
 	void addQQGroupAdmin(int userId);
+	void addRequest(userInfo userinfo);//添加申请人
 	void removeQQGroupAdmin(int userId);
 	void setQQGroupIsAllowJoin(bool isAllowJoin);
 	void setQQGroupIsAllowSubgroup(bool isAllowSubgroup);
@@ -54,10 +55,9 @@ private:
 	int              m_qqGroupOwnerID = 0;//群主ID
 	vector<userInfo> m_qqGroupMemberInfoList;//群成员信息列表,包括管理员群主
 	vector<userInfo> m_qqGroupAdminsIDList;	//管理员信息列表
+	vector<userInfo> m_qqGroupInvitedIDList;//申请人信息列表
 
 	qqGroupNodeLA*   m_next = nullptr;
-
-	static int       m_qqGroupCount;//群总数
 
 	friend class qqGroupListLA;
 };
@@ -78,6 +78,6 @@ public:
 private:
 	qqGroupNodeLA* m_sentinel;
 
-
+	int m_qqGroupCount = 1001;
 };
 #endif // !QQGROUP_H
