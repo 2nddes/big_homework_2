@@ -5,6 +5,7 @@
 #include<iostream>
 #include<fstream>
 #include<iomanip>
+#include<random>
 
 applicationQQLA::applicationQQLA() {
 	My_mkdir("QQ");
@@ -112,7 +113,7 @@ qqUserNodeLA* applicationQQLA::loginPage(userNodeLA*& curPlatformUser) {
 		refreshInput();
 		if (i == 1)
 		{
-			cout << "请输入QQ号:" << endl;
+			cout << "请输入QQ号:";
 			int qqNumber = -1;
 			cin >> qqNumber;
 			refreshInput();
@@ -131,8 +132,8 @@ qqUserNodeLA* applicationQQLA::loginPage(userNodeLA*& curPlatformUser) {
 
 			if (qqUser->getUserPasswd() == password) {
 				system("cls");
-				cout << "		登录成功!"<< endl
-					<< qqUser->getUserName() << "欢迎回来" << endl;
+				cout << "登录成功!"<< endl
+					<< "欢迎回来," << qqUser->getUserName() << endl;
 				system("pause");
 				return qqUser;
 			}
@@ -204,7 +205,7 @@ qqUserNodeLA* applicationQQLA::registerPage(userNodeLA*& curPlatformUser) {
 				p->setPlatformId(curPlatformUser->getID());
 				m_allQQUserList->saveQQUserListData();
 
-				cout << "		注册成功!" << endl;
+				cout << "注册成功!" << endl;
 				cout << "您的QQ号为:" << p->getAppUserId() << endl;
 				cout << "您的密码为:" << p->getUserPasswd() << endl;
 				system("pause");
@@ -235,7 +236,7 @@ void applicationQQLA::exit() {
 	delete m_allQQGroupList;
 	m_allQQUserList->saveQQUserListData();
 	delete m_allQQUserList;
-	cout << "		已退出QQ" << endl;
+	cout << "已退出QQ" << endl;
 	system("pause");
 }
 
@@ -296,27 +297,27 @@ void applicationQQLA::setUserInfoPage()
 		cin >> i;
 		refreshInput();
 		if (i == 1) {
-			cout << "输入新昵称:" << endl;
+			cout << "输入新昵称:";
 			string name;
 			cin >> name;
 			refreshInput();
 			m_currentUser->setUserName(name);
 			m_allQQUserList->saveQQUserListData();
 			system("cls");
-			cout << "		修改成功" << endl;
+			cout << "修改成功" << endl;
 			cout << "新昵称为:" << m_currentUser->getUserName() << endl;
 			system("pause");
 			continue;
 		}
 		else if (i == 2) {
-			cout << "输入新密码" << endl;
+			cout << "输入新密码:";
 			string password;
 			cin >> password;
 			refreshInput();
 			m_currentUser->setUserPasswd(password);
 			m_allQQUserList->saveQQUserListData();
 			system("cls");
-			cout << "		修改成功" << endl;
+			cout << "修改成功" << endl;
 			cout << "新密码为:" << m_currentUser->getUserPasswd() << endl;
 			system("pause");
 			continue;
@@ -339,7 +340,7 @@ void applicationQQLA::friendPage() {
 		cout << "           好友" << endl;
 		cout << "_________________________________" << endl;
 		showQQFriendList(m_currentUser->getQQFriendInfo());
-		cout << "_________________________________" << endl;
+
 		cout << "| 01 || 选择好友                  |" << endl;
 		cout << "| 02 || 添加好友                  |" << endl;
 		cout << "| 03 || 删除好友                  |" << endl;
@@ -374,7 +375,10 @@ void applicationQQLA::selectFriendPage() {
 	cout<<"           好友" << endl;
 	cout << "_________________________________" << endl;
 	showQQFriendList(m_currentUser->getQQFriendInfo());
-	cout << "_________________________________" << endl;
+	if(m_currentUser->getQQFriendInfo().size() == 0) {
+		system("pause");
+		return;
+	}
 	cout << "输入好友QQ号:";
 	int qqNumber = 0;
 	cin >> qqNumber;
@@ -466,7 +470,10 @@ void applicationQQLA::deleteFriendPage() {
 	cout << "           删除好友" << endl;
 	cout << "_________________________________" << endl;
 	showQQFriendList(m_currentUser->getQQFriendInfo());
-	cout << "_________________________________" << endl;
+	if(m_currentUser->getQQFriendInfo().size() == 0) {
+		system("pause");
+		return;
+	}
 	cout << "输入待删除好友QQ号:" << endl;
 	int qqNumber = 0;
 	cin >> qqNumber;
@@ -628,8 +635,8 @@ void applicationQQLA::chatWithFriendPage(qqUserNodeLA* friendPtr) {
 	while (1)
 	{
 		system("cls");
-		int len = friendPtr->getUserName().length();
-		cout<<setw((40 - len) / 2)  << friendPtr->getUserName() << endl;
+		long long len = friendPtr->getUserName().length();
+		cout << setw((40 - len) / 2) << friendPtr->getUserName() << endl;
 		cout << "_________________________________" << endl;
 		showMsg(recvMsgFromFriend(friendPtr));
 		cout << "_________________________________" << endl;
@@ -671,13 +678,17 @@ void applicationQQLA::applyFriend(qqUserNodeLA* user, qqUserNodeLA* friendToAdd)
 void applicationQQLA::groupPage() {
 	while (1) {
 		system("cls");
+		cout << "           群组" << endl;
 		showQQGroupList(m_currentUser->getQQGroupId());
-		cout << "1.选择群" << endl;
-		cout << "2.搜索群" << endl;
-		cout << "3.创建群" << endl;
-		cout << "4.加入群" << endl;
-		cout << "5.退出群" << endl;
-		cout << "0.返回" << endl;
+		cout << "| 01 || 选择群                    |" << endl;
+		cout << "| 02 || 搜索群                    |" << endl;
+		cout << "| 03 || 创建群                    |" << endl;
+		cout << "| 04 || 加入群                    |" << endl;
+		cout << "| 05 || 退出群                    |" << endl;
+		cout << "| 00 || 返回                      |" << endl;
+		cout << "_________________________________" << endl;
+		cout << "输入选项:";
+
 		int i = 0;
 		cin >> i;
 		refreshInput();
@@ -710,8 +721,14 @@ void applicationQQLA::groupPage() {
 void applicationQQLA::selectGroupPage()
 {
 	system("cls");
+	cout << "         选择群组" << endl;
 	showQQGroupList(m_currentUser->getQQGroupId());
-	cout << "输入群号" << endl;
+	if(m_currentUser->getQQGroupId().size() == 0) {
+		system("pause");
+		return;
+	}
+	cout << "输入群号:";
+
 	int groupId = 0;
 	cin >> groupId;
 	refreshInput();
@@ -734,15 +751,20 @@ void applicationQQLA::chatInGroupPage(qqGroupNodeLA* groupPtr) {
 		
 		int userid = m_currentUser->getAppUserId();
 		if(groupPtr->isOwner(userid)) {
-			cout << "1.发送消息" << endl;
-			cout << "2.查看群成员" << endl;
-			cout << "3.解散群" << endl;
-			cout << "4.设置群" << endl;
-			cout << "5.邀请进群" << endl;
-			cout << "6.踢出群成员" << endl;
-			cout << "7.查看群请求" << endl;
-			cout << "8.设置管理员" << endl;
-			cout << "0.返回" << endl;
+			cout << setw(20) << groupPtr->getGroupName() << endl;
+			cout << "_________________________________" << endl;
+			cout << "| 01 || 发送消息                  |" << endl;
+			cout << "| 02 || 查看群成员                |" << endl;
+			cout << "| 03 || 解散群                    |" << endl;
+			cout << "| 04 || 设置群                    |" << endl;
+			cout << "| 05 || 邀请进群                  |" << endl;
+			cout << "| 06 || 踢出群成员                |" << endl;
+			cout << "| 07 || 查看群请求                |" << endl;
+			cout << "| 08 || 设置管理员                |" << endl;
+			cout << "| 00 || 返回                      |" << endl;
+			cout << "_________________________________" << endl;
+			cout << "输入选项:";
+
 			int i = 0;
 			cin >> i;
 			refreshInput();
@@ -780,14 +802,18 @@ void applicationQQLA::chatInGroupPage(qqGroupNodeLA* groupPtr) {
 			}
 		}
 		else if (groupPtr->isAdministrator(userid)) {
-			cout << "1.发送消息" << endl;
-			cout << "2.查看群成员" << endl;
-			cout << "3.邀请进群" << endl;
-			cout << "4.退出群" << endl;
-			cout << "5.查看群请求" << endl;
-			cout << "6.踢出群成员" << endl;
+			cout << setw(20) << groupPtr->getGroupName() << endl;
+			cout << "_________________________________" << endl;
+			cout << "| 01 || 发送消息                  |" << endl;
+			cout << "| 02 || 查看群成员                |" << endl;
+			cout << "| 03 || 邀请进群                  |" << endl;
+			cout << "| 04 || 退出群                    |" << endl;
+			cout << "| 05 || 查看群请求                |" << endl;
+			cout << "| 06 || 踢出群成员                |" << endl;
+			cout << "| 00 || 返回                      |" << endl;
+			cout << "_________________________________" << endl;
+			cout << "输入选项:";
 
-			cout << "0.返回" << endl;
 			int i = 0;
 			cin >> i;
 			refreshInput();
@@ -818,13 +844,18 @@ void applicationQQLA::chatInGroupPage(qqGroupNodeLA* groupPtr) {
 				continue;
 			}
 		}
-		else if(groupPtr->isMember(userid))
-		{
-			cout << "1.发送消息" << endl;
-			cout << "2.查看群成员" << endl;
-			cout << "3.邀请进群" << endl;
-			cout << "4.退出群" << endl;
-			cout << "0.返回" << endl;
+		else if(groupPtr->isMember(userid)) {
+			cout << setw(20) << groupPtr->getGroupName() << endl;
+			cout << "_________________________________" << endl;
+			cout << "| 01 || 发送消息                  |" << endl;
+			cout << "| 02 || 查看群成员                |" << endl;
+			cout << "| 03 || 邀请进群                  |" << endl;
+			cout << "| 04 || 退出群                    |" << endl;
+			cout << "| 05 || 查看群请求                |" << endl;
+			cout << "| 00 || 返回                      |" << endl;
+			cout << "_________________________________" << endl;
+			cout << "输入选项:";
+			
 			int i = 0;
 			cin >> i;
 			refreshInput();
@@ -857,9 +888,14 @@ void applicationQQLA::chatInGroupPage(qqGroupNodeLA* groupPtr) {
 			}
 		}
 		else {
-			cout << "1.查看群成员" << endl;
-			cout << "2.申请加入群" << endl;
-			cout << "0.返回" << endl;
+			cout << setw(20) << groupPtr->getGroupName() << endl;
+			cout << "_________________________________" << endl;
+			cout << "| 01 || 查看群成员                |" << endl;
+			cout << "| 02 || 申请加入群                |" << endl;
+			cout << "| 00 || 返回                      |" << endl;
+			cout << "_________________________________" << endl;
+			cout << "输入选项:";
+
 			int i = 0;
 			cin >> i;
 			refreshInput();
@@ -877,6 +913,9 @@ void applicationQQLA::chatInGroupPage(qqGroupNodeLA* groupPtr) {
 				info.friendName = m_currentUser->getUserName();
 				groupPtr->addRequest(info);
 				m_allQQGroupList->saveGroupListData();
+				cout << "申请成功" << endl;
+				system("pause");
+				continue;
 			}
 			else if (i == 0) {
 				return;
@@ -893,7 +932,7 @@ void applicationQQLA::chatInGroupPage(qqGroupNodeLA* groupPtr) {
 void applicationQQLA::setAdminPage(qqGroupNodeLA* groupPtr)
 {
 	if (!groupPtr->isOwner(m_currentUser->getAppUserId())) {
-		cout << "你不是群主" << endl;
+		cout << "你不是群主,无法设置管理员" << endl;
 		system("pause");
 		return;
 	}
@@ -902,7 +941,13 @@ void applicationQQLA::setAdminPage(qqGroupNodeLA* groupPtr)
 		system("pause");
 		return;
 	}
-	cout << "输入要设置的管理员QQ号" << endl;
+	system("cls");
+	cout << "         设置管理员" << endl;
+	cout << "_________________________________" << endl;
+	showGroupMemberPage(groupPtr);
+
+	cout << "输入要设置的QQ号:";
+
 	int qqNumber = 0;
 	cin >> qqNumber;
 	refreshInput();
@@ -912,31 +957,51 @@ void applicationQQLA::setAdminPage(qqGroupNodeLA* groupPtr)
 		return;
 	}
 	if (groupPtr->isAdministrator(qqNumber)) {
-		cout << "该用户已经是管理员" << endl;
-		system("pause");
-		return;
-	}
-	cout << "确认设置按1" << endl;
-	int i = 0;
-	cin >> i;
-	refreshInput();
-	if (i == 1) {
-		groupPtr->addQQGroupAdmin(qqNumber);
-		m_allQQGroupList->saveGroupListData();
-		cout << "设置成功" << endl;
-		system("pause");
-		return;
+		cout << m_allQQUserList->findByQQId(qqNumber)->getUserName() << "是管理员" << endl;
+		cout << "输入1将其撤销管理员" << endl;
+
+		int i = 0;
+		cin >> i;
+		refreshInput();
+		
+		if (i == 1) {
+			groupPtr->removeQQGroupAdmin(qqNumber);
+			m_allQQGroupList->saveGroupListData();
+			cout << "撤销成功" << endl;
+			system("pause");
+			return;
+		}
+		else {
+			cout << "取消撤销" << endl;
+			system("pause");
+			return;
+		}
 	}
 	else {
-		cout << "取消设置" << endl;
-		system("pause");
-		return;
+		cout << m_allQQUserList->findByQQId(qqNumber)->getUserName() << "不是管理员" << endl;
+		cout << "输入1将其设置为管理员" << endl;
+		int i = 0;
+		cin >> i;
+		refreshInput();
+		if (i == 1) {
+			groupPtr->addQQGroupAdmin(qqNumber);
+			m_allQQGroupList->saveGroupListData();
+			cout << "设置成功" << endl;
+			system("pause");
+			return;
+		}
+		else {
+			cout << "取消设置" << endl;
+			system("pause");
+			return;
+		}
 	}
+	return;
 }
 
 void applicationQQLA::searchGroupPage() {
 	system("cls");
-	cout << "输入群号" << endl;
+	cout << "输入群号:" << endl;
 	int groupId = 0;
 	cin >> groupId;
 	refreshInput();
@@ -974,11 +1039,14 @@ void applicationQQLA::sendMsgPage(qqGroupNodeLA* groupPtr)
 
 void applicationQQLA::createGroupPage() {
 	system("cls");
-	cout << "输入群名" << endl;
+	cout << "		 创建群组" << endl;
+	cout << "_________________________________" << endl;
+	cout << "输入群名:";
 	string groupName;
 	cin >> groupName;
 	refreshInput();
-	cout << "确认创建按1" << endl;
+	system("cls");
+	cout << "按1确认创建:" << endl;
 	int i = 0;
 	cin >> i;
 	refreshInput();
@@ -989,10 +1057,12 @@ void applicationQQLA::createGroupPage() {
 		//保存文件
 		m_allQQGroupList->saveGroupListData();
 		m_allQQUserList->saveQQUserListData();
-
-		cout << "创建成功" << endl;
-		cout << "群号为" << p->getGroupId() << endl;
-		cout << "群名为" << p->getGroupName() << endl;
+		system("cls");
+		cout << "            创建成功" << endl;
+		cout << "_________________________________" << endl;
+		cout << "| 群号|| " << setw(26) << setiosflags(ios::left) << p->getGroupId() << "|" << endl;
+		cout << "| 群名|| " << setw(26) << setiosflags(ios::left) << p->getGroupName() << "|" << endl;
+		cout << "_________________________________" << endl;
 	}
 	else {
 		cout << "取消创建" << endl;
@@ -1004,12 +1074,34 @@ void applicationQQLA::createGroupPage() {
 
 void applicationQQLA::joinGroupPage() {
 	system("cls");
-	cout << "输入群号" << endl;
+	if (m_allQQGroupList->size() == 0) {
+		cout << "没有群可加入" << endl;
+		system("pause");
+		return;
+	}
+
+	default_random_engine e(time(NULL));
+	int id1 = 1001 + e() % m_allQQGroupList->size();
+	int id2 = 1001 + e() % m_allQQGroupList->size();
+
+	cout << "		     加入群组" << endl;
+	cout << "_________________________________" << endl;
+	cout << "            推荐群组" << endl;
+	cout << "_________________________________" << endl;
+	cout << "| 群号|| " << setw(26) << setiosflags(ios::left) << id1 << "|" << endl;
+	cout << "| 群名|| " << setw(26) << setiosflags(ios::left) << m_allQQGroupList->findByGroupId(id1)->getGroupName() << "|" << endl;
+	cout << "_________________________________" << endl;
+	cout << "| 群号|| " << setw(26) << setiosflags(ios::left) << id2 << "|" << endl;
+	cout << "| 群名|| " << setw(26) << setiosflags(ios::left) << m_allQQGroupList->findByGroupId(id2)->getGroupName() << "|" << endl;
+	cout << "_________________________________" << endl;
+	cout << resetiosflags(ios::left);
+	cout << "输入群号:";
+
 	int groupId = 0;
 	cin >> groupId;
 	refreshInput();
 	if(m_currentUser->isAddedGroup(groupId)) {
-		cout << "已经在群里" << endl;
+		cout << "已经在群内" << endl;
 		system("pause");
 		return;
 	}
@@ -1020,27 +1112,32 @@ void applicationQQLA::joinGroupPage() {
 		return;
 	}
 	else {
-		cout << p->getGroupName() << endl;
-		cout << "申请加入按1" << endl;
+		cout << "         加入群组" << endl;
+		cout << "_________________________________" << endl;
+		cout << "| 群号|| " << setw(26) << setiosflags(ios::left) << p->getGroupId() << "|" << endl;
+		cout << "| 群名|| " << setw(26) << setiosflags(ios::left) << p->getGroupName() << "|" << endl;
+		cout << "_________________________________" << endl;
+		cout << "| 01 || 申请加入                  |" << endl;
+		cout << "|其他|| 返回                      |" << endl;
+		cout << "_________________________________" << endl;
+		cout << "输入选项:";
 		int i = 0;
 		cin >> i;
 		refreshInput();
 		if (i == 1) {
-			//输入在群里的昵称
-			cout << "输入昵称" << endl;
-			string name;
-			cin >> name;
-			refreshInput();
 			//添加到群成员列表
 			userInfo info;
 			info.friendId = m_currentUser->getAppUserId();
-			info.friendName = name;
+			info.friendName = m_currentUser->getUserName();
 			//添加请求
 			p->addRequest(info);
 			//保存到文件
 			m_allQQGroupList->saveGroupListData();
 
-			cout << "申请加入成功" << endl;
+			cout << "申请成功" << endl;
+		}
+		else if (i == 0) {
+			cout << "取消申请" << endl;
 		}
 		else {
 			cout << "取消加入" << endl;
@@ -1052,7 +1149,17 @@ void applicationQQLA::joinGroupPage() {
 
 void applicationQQLA::disbandGroupPage(qqGroupNodeLA* groupPtr)
 {
-	cout << "确认解散群" << groupPtr->getGroupName() << "按1" << endl;
+	system("cls");
+	cout << "         解散群组" << endl;
+	cout << "_________________________________" << endl;
+	cout << "| 群号|| " << setw(26) << setiosflags(ios::left) << groupPtr->getGroupId() << "|" << endl;
+	cout << "| 群名|| " << setw(26) << setiosflags(ios::left) << groupPtr->getGroupName() << "|" << endl;
+	cout << "_________________________________" << endl;
+	cout << "| 01 || 确认解散(将会删除聊天记录!) |" << endl;
+	cout << "|其他|| 返回                      |" << endl;
+	cout << "_________________________________" << endl;
+	cout << "输入选项:";
+
 	int i = 0;
 	cin >> i;
 	refreshInput();
@@ -1063,6 +1170,11 @@ void applicationQQLA::disbandGroupPage(qqGroupNodeLA* groupPtr)
 		for (int i = 0; i < memberList.size(); i++) {
 			qqUserNodeLA* p = m_allQQUserList->findByQQId(memberList[i].friendId);
 			p->deleteQQGroupId(groupId);
+			//删除聊天文件
+			string path = "QQ\\" + to_string(p->getAppUserId()) + "\\groupchatrecord\\" + to_string(groupId) + ".dat";
+			if(_access(path.c_str(), 0) != -1) {
+				remove(path.c_str());
+			}
 		}
 
 		//移除群
@@ -1073,35 +1185,64 @@ void applicationQQLA::disbandGroupPage(qqGroupNodeLA* groupPtr)
 	}
 	else {
 		cout << "取消解散" << endl;
+		system("pause");
+		return;
 	}
 }
 
 void applicationQQLA::quitGroupPage() {
 	system("cls");
+	cout << "         退出群组" << endl;
+	cout << "_________________________________" << endl;
 	showQQGroupList(m_currentUser->getQQGroupId());
-	cout << "输入群号" << endl;
+	if(m_currentUser->getQQGroupId().size() == 0) {
+		system("pause");
+		return;
+	}
+	cout << "输入群号:" << endl;
 	int groupId = 0;
 	cin >> groupId;
 	refreshInput();
 	qqGroupNodeLA* p = m_allQQGroupList->findByGroupId(groupId);
-	if (p == nullptr) {
+	if (!m_currentUser->isAddedGroup(groupId)) {
 		cout << "群不存在" << endl;
 		system("pause");
 		return;
 	}
+	else if (p->isOwner(m_currentUser->getAppUserId())) {
+		cout << "群主无法退出群组,请尝试解散群" << endl;
+		system("pause");
+		return;
+	}
 	else {
-		cout << p->getGroupName() << endl;
-		cout << "确认退出按1" << endl;
+		system("cls");
+		cout << "         退出群组" << endl;
+		cout << "_________________________________" << endl;
+		cout << "| 群号|| " << setw(26) << setiosflags(ios::left) << p->getGroupId() << "|" << endl;
+		cout << "| 群名|| " << setw(26) << setiosflags(ios::left) << p->getGroupName() << "|" << endl;
+		cout << "_________________________________" << endl;
+		cout << "| 01 || 确认退出(将会删除聊天记录!)|" << endl;
+		cout << "|其他|| 返回                      |" << endl;
+		cout << "_________________________________" << endl;
+		cout << "输入选项:";
+
 		int i = 0;
 		cin >> i;
 		refreshInput();
 		if (i == 1) {
 			//相互删除
+			if (p->isAdministrator(m_currentUser->getAppUserId())) {
+				p->removeQQGroupAdmin(m_currentUser->getAppUserId());
+			}
 			p->removeMember(m_currentUser->getAppUserId());
 			m_currentUser->deleteQQGroupId(p->getGroupId());
 			//保存到文件
 			m_allQQGroupList->saveGroupListData();
 			m_allQQUserList->saveQQUserListData();
+			string path = "QQ\\" + to_string(m_currentUser->getAppUserId()) + "\\groupchatrecord\\" + to_string(groupId) + ".dat";
+			if (_access(path.c_str(), 0) != -1) {
+				remove(path.c_str());
+			}
 
 			cout << "退出成功" << endl;
 		}
@@ -1114,17 +1255,39 @@ void applicationQQLA::quitGroupPage() {
 }
 
 void applicationQQLA::quitGroupPage(qqGroupNodeLA* groupPtr) {
-	cout << "确认退出按1" << endl;
+	if (groupPtr->isOwner(m_currentUser->getAppUserId())) {
+		cout << "群主无法退出群组,请尝试解散群" << endl;
+		system("pause");
+		return;
+	}
+	system("cls");
+	cout << "         退出群组" << endl;
+	cout << "_________________________________" << endl;
+	cout << "| 群号|| " << setw(26) << setiosflags(ios::left) << groupPtr->getGroupId() << "|" << endl;
+	cout << "| 群名|| " << setw(26) << setiosflags(ios::left) << groupPtr->getGroupName() << "|" << endl;
+	cout << "_________________________________" << endl;
+	cout << "| 01 || 确认退出(将会删除聊天记录!)|" << endl;
+	cout << "|其他|| 返回                      |" << endl;
+	cout << "_________________________________" << endl;
+	cout << "输入选项:";
+
 	int i = 0;
 	cin >> i;
 	refreshInput();
 	if (i == 1) {
 		//相互删除
+		if (groupPtr->isAdministrator(m_currentUser->getAppUserId())) {
+			groupPtr->removeQQGroupAdmin(m_currentUser->getAppUserId());
+		}
 		groupPtr->removeMember(m_currentUser->getAppUserId());
 		m_currentUser->deleteQQGroupId(groupPtr->getGroupId());
 		//保存到文件
 		m_allQQGroupList->saveGroupListData();
 		m_allQQUserList->saveQQUserListData();
+		string path = "QQ\\" + to_string(m_currentUser->getAppUserId()) + "\\groupchatrecord\\" + to_string(groupPtr->getGroupId()) + ".dat";
+		if (_access(path.c_str(), 0) != -1) {
+			remove(path.c_str());
+		}
 
 		cout << "退出成功" << endl;
 	}
@@ -1139,19 +1302,23 @@ void applicationQQLA::setGroupConfigPage(qqGroupNodeLA* groupPtr) {
 	while (1) 
 	{
 		system("cls");
-		cout << "1.修改群名" << endl;
-		cout << "2.是否允许邀请进群" << endl;
-		cout << "3.是否允许搜索加入" << endl;
-		cout << "4.是否允许发言" << endl;
-		cout << "5.是否允许管理员" << endl;
-		cout << "6.是否群成员临时会话" << endl;
-		cout << "0.返回" << endl;
+		cout << setw(20) << groupPtr->getGroupName() << endl;
+		cout << "_________________________________" << endl;
+		cout << "| 01 || 修改群名                  |" << endl;
+		cout << "| 02 || 是否允许邀请进群          |" << endl;
+		cout << "| 03 || 是否允许搜索加入          |" << endl;
+		cout << "| 04 || 是否允许发言              |" << endl;
+		cout << "| 05 || 是否允许设置管理员        |" << endl;
+		cout << "| 06 || 是否群成员临时会话        |" << endl;
+		cout << "| 00 || 返回                      |" << endl;
+		cout << "_________________________________" << endl;
+		cout << "输入选项:";
+
 		int i = 0;
 		cin >> i;
 		refreshInput();
 		if (i == 1) {
-			cout << "当前群名为" << groupPtr->getGroupName() << endl;
-			cout << "输入新群名,直接回车返回" << endl;
+			cout << "输入新群名,直接回车可返回" << endl;
 			string groupName;
 			cin >> groupName;
 			refreshInput();
@@ -1166,7 +1333,7 @@ void applicationQQLA::setGroupConfigPage(qqGroupNodeLA* groupPtr) {
 		}
 		else if (i == 2) {
 			if (groupPtr->isAllowInvite()) {
-				cout << "当前允许邀请进群,禁止按1" << endl;
+				cout << "当前允许邀请进群,按1禁止:" << endl;
 				int j = 0;
 				cin >> j;
 				refreshInput();
@@ -1184,7 +1351,7 @@ void applicationQQLA::setGroupConfigPage(qqGroupNodeLA* groupPtr) {
 				}
 			}
 			else {
-				cout << "当前禁止邀请进群,允许按1" << endl;
+				cout << "当前禁止邀请进群,按1允许:" << endl;
 				int j = 0;
 				cin >> j;
 				refreshInput();
@@ -1204,7 +1371,7 @@ void applicationQQLA::setGroupConfigPage(qqGroupNodeLA* groupPtr) {
 		}
 		else if (i == 3) {
 			if (groupPtr->isAllowJoin()) {
-				cout << "当前允许搜索加入,禁止按1" << endl;
+				cout << "当前允许搜索加入,按1禁止:" << endl;
 				int j = 0;
 				cin >> j;
 				refreshInput();
@@ -1222,7 +1389,7 @@ void applicationQQLA::setGroupConfigPage(qqGroupNodeLA* groupPtr) {
 				}
 			}
 			else {
-				cout << "当前禁止搜索加入,允许按1" << endl;
+				cout << "当前禁止搜索加入,按1允许:" << endl;
 				int j = 0;
 				cin >> j;
 				refreshInput();
@@ -1242,7 +1409,7 @@ void applicationQQLA::setGroupConfigPage(qqGroupNodeLA* groupPtr) {
 		}
 		else if (i == 4) {
 			if (groupPtr->isAllowSend()) {
-				cout << "当前允许发言,禁止按1" << endl;
+				cout << "当前允许发言,按1禁止:" << endl;
 				int j = 0;
 				cin >> j;
 				refreshInput();
@@ -1260,7 +1427,7 @@ void applicationQQLA::setGroupConfigPage(qqGroupNodeLA* groupPtr) {
 				}
 			}
 			else {
-				cout << "当前禁止发言,允许按1" << endl;
+				cout << "当前禁止发言,按1允许:" << endl;
 				int j = 0;
 				cin >> j;
 				refreshInput();
@@ -1280,7 +1447,7 @@ void applicationQQLA::setGroupConfigPage(qqGroupNodeLA* groupPtr) {
 		}
 		else if (i == 5) {
 			if (groupPtr->isAllowAdmins()) {
-				cout << "当前允许管理员,禁止按1" << endl;
+				cout << "当前允许管理员,按1禁止:" << endl;
 				int j = 0;
 				cin >> j;
 				refreshInput();
@@ -1298,7 +1465,7 @@ void applicationQQLA::setGroupConfigPage(qqGroupNodeLA* groupPtr) {
 				}
 			}
 			else {
-				cout << "当前禁止管理员,允许按1" << endl;
+				cout << "当前禁止管理员,按1允许:" << endl;
 				int j = 0;
 				cin >> j;
 				refreshInput();
@@ -1318,7 +1485,7 @@ void applicationQQLA::setGroupConfigPage(qqGroupNodeLA* groupPtr) {
 		}
 		else if (i == 6) {
 			if (groupPtr->isAllowSubgroup()) {
-				cout << "当前允许群成员临时会话,禁止按1" << endl;
+				cout << "当前允许群成员临时会话,按1禁止:" << endl;
 				int j = 0;
 				cin >> j;
 				refreshInput();
@@ -1336,7 +1503,7 @@ void applicationQQLA::setGroupConfigPage(qqGroupNodeLA* groupPtr) {
 				}
 			}
 			else {
-				cout << "当前禁止群成员临时会话,允许按1" << endl;
+				cout << "当前禁止群成员临时会话,按1允许:" << endl;
 				int j = 0;
 				cin >> j;
 				refreshInput();
@@ -1442,9 +1609,78 @@ void applicationQQLA::kickMemberPage(qqGroupNodeLA* groupPtr)
 
 }
 
-void applicationQQLA::groupRequestPage(qqGroupNodeLA* groupPtr)
-{
-	//TODO
+void applicationQQLA::groupRequestPage(qqGroupNodeLA* groupPtr) {
+	while(1)
+	{
+		if (!groupPtr->isAdministrator(m_currentUser->getAppUserId()) && !groupPtr->isOwner(m_currentUser->getAppUserId())) {
+			cout << "无权处理申请";
+			system("pause");
+			return;
+		}
+		vector<userInfo> requestList = groupPtr->getQQGroupRequestInfoList();
+		if (requestList.size() == 0) {
+			cout << "没有申请" << endl;
+			system("pause");
+			return;
+		}
+		cout << "           申请列表" << endl;
+		cout << "_________________________________" << endl;
+
+		for (int i = 0; i < requestList.size(); i++) {
+			cout << "|QQ号|| " << setw(26) << setiosflags(ios::left) << requestList[i].friendId << "|" << endl;
+			cout << "|昵称|| " << setw(26) << setiosflags(ios::left) << requestList[i].friendName << "|" << endl;
+			cout << "_________________________________" << endl;
+		}
+		cout << resetiosflags(ios::left);
+		cout << "| 01 || 同意                      |" << endl;
+		cout << "| 02 || 拒绝                      |" << endl;
+		cout << "| 00 || 返回                      |" << endl;
+		cout << "_________________________________" << endl;
+		cout << "输入选项:";
+
+		int i = 0;
+		cin >> i;
+		refreshInput();
+		if (i == 1) {
+			cout << "输入同意的QQ号:";
+			int qqNumber = 0;
+			cin >> qqNumber;
+			refreshInput();
+			//检查是否存在该请求
+			for (int i = 0; i < requestList.size(); i++) {
+				if (requestList[i].friendId == qqNumber) {
+					break;
+				}
+			}
+			if (i == requestList.size()) {
+				cout << "请求不存在" << endl;
+				system("pause");
+				continue;
+			}
+			//互相添加
+			groupPtr->addMember(qqNumber);
+
+			qqUserNodeLA* p = m_allQQUserList->findByQQId(qqNumber);
+			p->addQQGroupId(groupPtr->getGroupId());
+			//移除请求
+			groupPtr->removeRequest(qqNumber);
+			
+			//保存到文件
+			m_allQQGroupList->saveGroupListData();
+			m_allQQUserList->saveQQUserListData();
+
+			cout << "添加成功" << endl;
+			system("pause");
+			continue;
+		}
+		else {
+			//移除请求
+			groupPtr->removeRequest(requestList[i].friendId);
+			cout << "已拒绝" << endl;
+			system("pause");
+			continue;
+		}
+	}
 }
 
 /////////////////////////////////////////////////////////////////
@@ -1590,7 +1826,7 @@ void applicationQQLA::makeUserFile(string path){
 	My_mkdir((path + "\\groupchatrecord").c_str());
 
 }
-
+//TODO:color
 void applicationQQLA::showMsg(vector<QMsg> m) {
 	for (int i = 0; i < m.size(); i++) {
 		if (m_currentUser->getAppUserId() == m[i].senderId) {
@@ -1606,48 +1842,64 @@ void applicationQQLA::showMsg(vector<QMsg> m) {
 		}
 	}
 }
-
+//TODO:color
 void applicationQQLA::showQQFriendList(vector<userInfo> friendlist) {
 	if (friendlist.size() == 0)
 	{
-		cout << "您没有任何好友" << endl;
+		cout << "        您没有任何好友" << endl;
+		cout << "_________________________________" << endl;
 		return;
 	}
 	cout << "您有" << friendlist.size() << "个好友" << endl;
-	cout << "好友昵称 好友QQ号" << endl;
-	for (int i = 0; i < friendlist.size(); i++) {
-		cout << friendlist[i].friendName << " ";
-		cout << friendlist[i].friendId << endl;
-	}
-}
+	cout << "_________________________________" << endl;
 
+	for (int i = 0; i < friendlist.size(); i++) {
+		cout << "|QQ号|| " << setw(26) << setiosflags(ios::left) << friendlist[i].friendId << "|" << endl;
+		cout << "|昵称|| " << setw(26) << setiosflags(ios::left) << friendlist[i].friendName << "|" << endl;
+		cout << "_________________________________" << endl;
+	}
+	cout << resetiosflags(ios::left);
+
+	return;
+}
+//TODO:color
 void applicationQQLA::showQQGroupList(vector<int> grouplist) {
 	if (grouplist.size() == 0)
 	{
-		cout << "您没有加入任何群" << endl;
+		cout << "       您没有加入任何群" << endl;
+		cout << "_________________________________" << endl;
 		return;
 	}
 	cout << "您有" << grouplist.size() << "个群" << endl;
-	cout << "群号 群名" << endl;
+	cout << "_________________________________" << endl;
+
 	for (int i = 0; i < grouplist.size(); i++) {
-		cout << grouplist[i] << " "
-			<< m_allQQGroupList->findByGroupId(grouplist[i])->getGroupName() << endl;
+		cout << "|群号|| " << setw(26) << setiosflags(ios::left) << grouplist[i] << "|" << endl;
+		cout << "|群名|| " << setw(26) << setiosflags(ios::left) << m_allQQGroupList->findByGroupId(grouplist[i])->getGroupName() << "|" << endl;
+		cout << "_________________________________" << endl;
 	}
+	cout << resetiosflags(ios::left);
+
+	return;
 }
 
 void applicationQQLA::showGroupMemberPage(int groupId) {
 	qqGroupNodeLA* groupPtr = m_allQQGroupList->findByGroupId(groupId);
 	showGroupMemberPage(groupPtr);
 }
-
+//TODO:color
 void applicationQQLA::showGroupMemberPage(qqGroupNodeLA* groupPtr) {
 	system("cls");
-	cout << "群成员列表" << endl;
-	cout << "共有" << groupPtr->getQQGroupMemberInfoList().size() << "个成员" << endl;
-	cout << "成员QQ号 成员昵称" << endl;
-	for (int i = 0; i < groupPtr->getQQGroupMemberInfoList().size(); i++) {
-		cout << groupPtr->getQQGroupMemberInfoList()[i].friendId << " " 
-			<< groupPtr->getQQGroupMemberInfoList()[i].friendName << endl;
+	vector<userInfo> memberList = groupPtr->getQQGroupMemberInfoList();
+	cout << "          群成员列表(" << memberList.size() << ")" << endl;
+	cout << "_________________________________" << endl;
+
+	for (int i = 0; i < memberList.size(); i++) {
+		cout << "|QQ号|| " << setw(26) << setiosflags(ios::left) << memberList[i].friendId << "|" << endl;
+		cout << "|昵称|| " << setw(26) << setiosflags(ios::left) << memberList[i].friendName << "|" << endl;
+		cout << "_________________________________" << endl;
 	}
+	cout << resetiosflags(ios::left);
+
 	system("pause");
 }

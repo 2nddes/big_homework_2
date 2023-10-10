@@ -81,6 +81,15 @@ void qqGroupNodeLA::addRequest(userInfo userinfo){
 	m_qqGroupInvitedIDList.push_back(userinfo);
 }
 
+void qqGroupNodeLA::removeRequest(int userId) {
+	for (auto it = m_qqGroupInvitedIDList.begin(); it != m_qqGroupInvitedIDList.end(); it++) {
+		if (userId == it->friendId) {
+			m_qqGroupInvitedIDList.erase(it);
+			return;
+		}
+	}
+}
+
 void qqGroupNodeLA::changeOwner(int userId) {
 	m_qqGroupOwnerID = userId;
 }
@@ -198,6 +207,10 @@ vector<userInfo> qqGroupNodeLA::getQQGroupMemberInfoList()const {
 
 vector<userInfo> qqGroupNodeLA::getQQGroupAdminsInfoList()const {
 	return m_qqGroupAdminsIDList;
+}
+
+vector<userInfo> qqGroupNodeLA::getQQGroupRequestInfoList() const {
+	return m_qqGroupInvitedIDList;
 }
 
 /////////////////////////////////////////////////
@@ -341,4 +354,8 @@ qqGroupNodeLA* qqGroupListLA::findByGroupId(int qqGroupId) {
 
 qqGroupNodeLA* qqGroupListLA::getSentinel() {
 	return m_sentinel;
+}
+
+int qqGroupListLA::size() const{
+	return m_qqGroupCount;
 }

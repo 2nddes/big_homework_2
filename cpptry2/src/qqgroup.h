@@ -31,6 +31,7 @@ public:
 	void setQQGroupName(string qqGroupName);
 	void addQQGroupAdmin(int userId);
 	void addRequest(userInfo userinfo);//ÃÌº”…Í«Î»À
+	void removeRequest(int userId);//…æ≥˝…Í«Î»À
 	void removeQQGroupAdmin(int userId);
 	void setQQGroupIsAllowJoin(bool isAllowJoin);
 	void setQQGroupIsAllowSubgroup(bool isAllowSubgroup);
@@ -44,6 +45,7 @@ public:
 	string getQQGroupName()const;
 	vector<userInfo> getQQGroupMemberInfoList()const;
 	vector<userInfo> getQQGroupAdminsInfoList()const;
+	vector<userInfo> getQQGroupRequestInfoList()const;
 
 
 
@@ -74,7 +76,7 @@ public:
 	qqGroupNodeLA* addGroup(string qqGroupName, int qqGroupOwnerID);
 	qqGroupNodeLA* findByGroupId(int qqGroupId);
 	qqGroupNodeLA* getSentinel();
-
+	int size()const;
 private:
 	qqGroupNodeLA* m_sentinel;
 
