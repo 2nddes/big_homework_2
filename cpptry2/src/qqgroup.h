@@ -38,11 +38,14 @@ public:
 	void setQQGroupIsAllowSend(bool isAllowSend);
 	void setQQGroupIsAllowInvite(bool isAllowInvite);
 	void setQQGroupIsAllowAdmins(bool isAllowAdmins);
+	void setMemberName(int userId, string userName);
+	void setGroupNickName(int userId, string groupNickName);
 
 	int getQQGroupId()const;
 	int getQQGroupMemberCount()const;
 	int getQQGroupOwnerID()const;
 	string getQQGroupName()const;
+	string getGroupNickName(int userId)const;
 	vector<userInfo> getQQGroupMemberInfoList()const;
 	vector<userInfo> getQQGroupAdminsInfoList()const;
 	vector<userInfo> getQQGroupRequestInfoList()const;

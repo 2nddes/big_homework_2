@@ -48,7 +48,7 @@ public:
 	void sendMsgPage(qqGroupNodeLA* groupPtr);//发送群消息
 	void createGroupPage();//创建群
 	void joinGroupPage();//加入群,在里面输入群号
-	void disbandGroupPage(qqGroupNodeLA* groupPtr);//解散群
+	bool disbandGroupPage(qqGroupNodeLA* groupPtr);//解散群
 	void quitGroupPage();//退出群,在里面输入群号
 	void quitGroupPage(qqGroupNodeLA* groupPtr);//退出群
 	void setGroupConfigPage(qqGroupNodeLA* groupPtr);//设置群配置
@@ -56,7 +56,9 @@ public:
 	void kickMemberPage(qqGroupNodeLA* groupPtr);//踢出群成员
 	void groupRequestPage(qqGroupNodeLA* groupPtr);//批阅群申请
 	void chatInGroupPage(qqGroupNodeLA* groupPtr);//群聊天界面
-	void setAdminPage(qqGroupNodeLA* groupPtr);//设置管理员
+	void setAdminPage(qqGroupNodeLA* groupPtr);//设置管理员4
+	void setGroupNickNamePage(qqGroupNodeLA* groupPtr);//设置群昵称
+
 	//TODO:匿名聊天
 	void makeUserFile(string path);//创建用户文件
 

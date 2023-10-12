@@ -65,6 +65,7 @@ void applicationListLA::showAllApp()
 			<< setiosflags(ios::left)
 			<< app->getAppName() << "|" << endl;
 	}
+	cout << resetiosflags(ios::left);
 }
 
 int applicationListLA::appCount()

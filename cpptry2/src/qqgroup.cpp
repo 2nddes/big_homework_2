@@ -82,9 +82,9 @@ void qqGroupNodeLA::addRequest(userInfo userinfo){
 }
 
 void qqGroupNodeLA::removeRequest(int userId) {
-	for (auto it = m_qqGroupInvitedIDList.begin(); it != m_qqGroupInvitedIDList.end(); it++) {
-		if (userId == it->friendId) {
-			m_qqGroupInvitedIDList.erase(it);
+	for (int i = 0; i < m_qqGroupInvitedIDList.size();i++) {
+		if (userId == m_qqGroupInvitedIDList[i].friendId) {
+			m_qqGroupInvitedIDList.erase(m_qqGroupInvitedIDList.begin() + i);
 			return;
 		}
 	}
@@ -141,6 +141,25 @@ void qqGroupNodeLA::setQQGroupIsAllowInvite(bool isAllowInvite) {
 
 void qqGroupNodeLA::setQQGroupIsAllowAdmins(bool isAllowAdmins) {
 	m_isAllowAdmins = isAllowAdmins;
+}
+
+void qqGroupNodeLA::setMemberName(int userId, string userName) {
+	for (auto it = m_qqGroupMemberInfoList.begin(); it != m_qqGroupMemberInfoList.end(); it++) {
+		if (it->friendId == userId) {
+			it->friendName = userName;
+			return;
+		}
+	}
+}
+
+void qqGroupNodeLA::setGroupNickName(int userId, string groupNickName)
+{
+	for (auto it = m_qqGroupMemberInfoList.begin(); it != m_qqGroupMemberInfoList.end(); it++) {
+		if (it->friendId == userId) {
+			it->friendName = groupNickName;
+			return;
+		}
+	}
 }
 
 bool qqGroupNodeLA::isAdministrator(int userId)const {
@@ -201,6 +220,15 @@ string qqGroupNodeLA::getQQGroupName()const {
 	return m_qqGroupName;
 }
 
+string qqGroupNodeLA::getGroupNickName(int userId) const {
+	for (auto it = m_qqGroupMemberInfoList.begin(); it != m_qqGroupMemberInfoList.end(); it++) {
+		if (it->friendId == userId) {
+			return it->friendName;
+		}
+	}
+	return "нч";
+}
+
 vector<userInfo> qqGroupNodeLA::getQQGroupMemberInfoList()const {
 	return m_qqGroupMemberInfoList;
 }
@@ -236,6 +264,7 @@ qqGroupListLA::qqGroupListLA() {
 	bool isAllowSend = false;
 	bool isAllowInvite = false;
 
+	fin >> m_qqGroupCount;
 	while (fin >> qqGroupNum >> qqGroupName >> qqGroupOwnerId) {
 		
 		m_sentinel->setNext(new qqGroupNodeLA(qqGroupNum, qqGroupName, qqGroupOwnerId, m_sentinel->getNext()));
@@ -267,6 +296,19 @@ qqGroupListLA::qqGroupListLA() {
 
 			p->m_qqGroupAdminsIDList.push_back(qqGroupAdminsInfo);
 		}
+
+		int qqGroupInvitedCount = 0;
+		fin >> qqGroupInvitedCount;
+
+		for (int i = 0; i < qqGroupInvitedCount; i++) {
+
+			userInfo qqGroupInvitedInfo;
+			fin >> qqGroupInvitedInfo.friendId;
+			fin >> qqGroupInvitedInfo.friendName;
+
+			p->m_qqGroupInvitedIDList.push_back(qqGroupInvitedInfo);
+		}
+
 	}
 	fin.close();
 	///////////////////////////TODO///////////////////////////
@@ -313,6 +355,13 @@ void qqGroupListLA::saveGroupListData() {
 			fout << adminsList[i].friendId << " " 
 				<< adminsList[i].friendName << " ";
 		}
+		vector<userInfo> invitedList = p->getQQGroupRequestInfoList();
+		fout << invitedList.size() << endl;
+		for (int i = 0; i < invitedList.size(); i++) {
+			fout << invitedList[i].friendId << " " 
+				<< invitedList[i].friendName << " ";
+		}
+
 		p = p->getNext();
 	}
 	fout.close();

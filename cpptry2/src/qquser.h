@@ -65,6 +65,7 @@ public:
 	void deleteQQUser(qqUserNodeLA* qqUserToDelete);
 	void deleteQQUserByQQId(int qqId);
 	void saveQQUserListData();
+	int size()const;
 private:
 	int           m_qqUserCount = 0;
 	qqUserNodeLA* m_sentinel = nullptr;

@@ -65,6 +65,10 @@ void qqUserListLA::saveQQUserListData() {
 	ofs.close();
 }
 
+int qqUserListLA::size() const {
+	return m_qqUserCount;
+}
+
 qqUserListLA::~qqUserListLA() {
 	qqUserNodeLA* p = m_sentinel->getNext();
 	while (p != nullptr) {
