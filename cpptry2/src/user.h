@@ -4,6 +4,11 @@
 #include<string>
 using namespace std;
 
+typedef struct userInfo {
+	int friendId{};
+	string friendName{};
+}userInfo;
+
 class userOfApp {
 public:
 	virtual int getPlatformId()const = 0;//获取平台ID
@@ -32,6 +37,7 @@ public:
 	int getBirth()const;//获取生日
 	int getTAge()const;//获取T龄
 	bool isQQEnabled()const;//判断是否开通qq服务
+	bool isWeChatEnabled()const;//判断是否开通微信服务
 	string getUserName()const;//获取用户名
 	string getAddress()const;//获取地址
 	userNodeLA* getNext()const;//获取下一个用户
@@ -41,6 +47,7 @@ public:
 	void setAddress(string address);//设置地址
 	void setNext(userNodeLA* next);//设置下一个用户
 	void setQQStatus(bool status);//设置qq服务开通状态
+	void setWeChatStatus(bool status);//设置微信服务开通状态
 	void setPhone(string phoneNumber);//设置电话号码
 	void setEmail(string email);//设置邮箱
 
@@ -54,6 +61,7 @@ protected:
 	string      m_email = "";      //邮箱
 			     
 	bool        m_qqActivationStatus = false;//qq服务开通状态
+	bool        m_wechatActivationStatus = false;//微信服务开通状态
 
 	userNodeLA* m_next = nullptr;
 };

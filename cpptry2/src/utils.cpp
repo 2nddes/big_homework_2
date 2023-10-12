@@ -66,7 +66,7 @@ void My_mkfile(const char* filePath, const char* fileName)
 void My_mkdir(const char* dirPath)
 {
 	if (_access(dirPath, 0) == -1)
-		_mkdir(dirPath);
+		int i = _mkdir(dirPath);
 }
 
 int dateInput()
@@ -76,7 +76,7 @@ int dateInput()
 	cin >> temp;
 	refreshInput();
 	int flag = 0;
-	int len = temp.size();
+	int len = (int)temp.size();
 	while (1) {
 		flag = 0;
 		while (len != 8)
@@ -84,7 +84,7 @@ int dateInput()
 			cout << "请输入正确的日期格式,例:20200808" << endl;
 			cin >> temp;
 			refreshInput();
-			len = temp.size();
+			len = (int)temp.size();
 		}
 		int  year = 1000 * (temp[0] - '0') + 100 * (temp[1] - '0') + 10 * (temp[2] - '0') + temp[3] - '0';
 		int  month = (temp[4] - '0') * 10 + temp[5] - '0';

@@ -30,24 +30,45 @@
     <ClCompile Include="src\application.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\applicationQQ.cpp">
+    <ClCompile Include="src\qq_src\applicationQQ.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\qquser.cpp">
+    <ClCompile Include="src\qq_src\qquser.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\user.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\qqgroup.cpp">
+    <ClCompile Include="src\qq_src\qqgroup.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\utils.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\qq_src\appQQ_friend.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qq_src\appQQ_group.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wechat_src\applicationWeChat.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wechat_src\WeChatgroup.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wechat_src\WeChatuser.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wechat_src\appWeChat_friend.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wechat_src\appWeChat_group.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\qquser.h">
+    <ClInclude Include="src\qq_src\qquser.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\application.h">
@@ -56,13 +77,22 @@
     <ClInclude Include="src\platform.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\applicationQQ.h">
+    <ClInclude Include="src\qq_src\applicationQQ.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\qqgroup.h">
+    <ClInclude Include="src\qq_src\qqgroup.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wechat_src\applicationWeChat.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wechat_src\WeChatgroup.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wechat_src\WeChatuser.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,12 +2,9 @@
 #define QQUSER_H
 
 #include<vector>
-#include"user.h"
+#include"/project/C++Project/cpptry2/cpptry2/src/user.h"
 
-typedef struct userInfo{
-	int friendId{};
-	string friendName{};
-}userInfo;
+
 
 class qqUserNodeLA:public userOfApp {
 public:

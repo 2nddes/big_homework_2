@@ -132,24 +132,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\qqgroup.cpp" />
-    <ClCompile Include="src\qquser.cpp" />
+    <ClCompile Include="src\qq_src\appQQ_friend.cpp" />
+    <ClCompile Include="src\qq_src\appQQ_group.cpp" />
+    <ClCompile Include="src\qq_src\qqgroup.cpp" />
+    <ClCompile Include="src\qq_src\qquser.cpp" />
     <ClCompile Include="src\application.cpp" />
-    <ClCompile Include="src\applicationQQ.cpp" />
+    <ClCompile Include="src\qq_src\applicationQQ.cpp" />
     <ClCompile Include="src\group.h" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\platform.cpp" />
     <ClCompile Include="src\user.cpp" />
     <ClCompile Include="src\user.h" />
     <ClCompile Include="src\utils.cpp" />
+    <ClCompile Include="src\wechat_src\applicationWeChat.cpp" />
+    <ClCompile Include="src\wechat_src\appWeChat_friend.cpp" />
+    <ClCompile Include="src\wechat_src\appWeChat_group.cpp" />
+    <ClCompile Include="src\wechat_src\WeChatgroup.cpp" />
+    <ClCompile Include="src\wechat_src\WeChatuser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\application.h" />
-    <ClInclude Include="src\applicationQQ.h" />
+    <ClInclude Include="src\qq_src\applicationQQ.h" />
     <ClInclude Include="src\platform.h" />
-    <ClInclude Include="src\qqgroup.h" />
-    <ClInclude Include="src\qquser.h" />
+    <ClInclude Include="src\qq_src\qqgroup.h" />
+    <ClInclude Include="src\qq_src\qquser.h" />
     <ClInclude Include="src\utils.h" />
+    <ClInclude Include="src\wechat_src\applicationWeChat.h" />
+    <ClInclude Include="src\wechat_src\WeChatgroup.h" />
+    <ClInclude Include="src\wechat_src\WeChatuser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

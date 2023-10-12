@@ -1,10 +1,10 @@
 #ifndef APPLICATIONQQ_H
 #define APPLICATIONQQ_H
 
-#include"application.h"
+#include"/project/C++Project/cpptry2/cpptry2/src/application.h"
 #include"qquser.h"
 #include"qqgroup.h"
-#include"utils.h"
+#include"/project/C++Project/cpptry2/cpptry2/src/utils.h"
 
 #include<Windows.h>
 #include<io.h>
@@ -49,14 +49,14 @@ public:
 	void createGroupPage();//创建群
 	void joinGroupPage();//加入群,在里面输入群号
 	bool disbandGroupPage(qqGroupNodeLA* groupPtr);//解散群
-	void quitGroupPage();//退出群,在里面输入群号
-	void quitGroupPage(qqGroupNodeLA* groupPtr);//退出群
+	bool quitGroupPage();//退出群,在里面输入群号
+	bool quitGroupPage(qqGroupNodeLA* groupPtr);//退出群
 	void setGroupConfigPage(qqGroupNodeLA* groupPtr);//设置群配置
 	void inviteFriendInPage(qqGroupNodeLA* groupPtr);//邀请好友进群
 	void kickMemberPage(qqGroupNodeLA* groupPtr);//踢出群成员
 	void groupRequestPage(qqGroupNodeLA* groupPtr);//批阅群申请
 	void chatInGroupPage(qqGroupNodeLA* groupPtr);//群聊天界面
-	void setAdminPage(qqGroupNodeLA* groupPtr);//设置管理员4
+	void setAdminPage(qqGroupNodeLA* groupPtr);//设置管理员
 	void setGroupNickNamePage(qqGroupNodeLA* groupPtr);//设置群昵称
 
 	//TODO:匿名聊天

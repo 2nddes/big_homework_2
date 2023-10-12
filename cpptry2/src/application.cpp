@@ -1,6 +1,7 @@
 #include"utils.h"
 #include"application.h"
-#include"applicationQQ.h"
+#include"/project/C++Project/cpptry2/cpptry2/src/qq_src/applicationQQ.h"
+#include"/project/C++Project/cpptry2/cpptry2/src/wechat_src/applicationWeChat.h"
 #include<iostream>
 #include<iomanip>
 
@@ -14,8 +15,8 @@ applicationListLA::applicationListLA() {
 	app->m_next = new applicationQQLA();
 	app=app->m_next;
 	
-	//app->next = new applicationWeChatLA();
-	//app=app->next;
+	app->m_next = new applicationWeChatLA();
+	app=app->m_next;
 
 }
 
@@ -26,8 +27,8 @@ applicationListLA::applicationListLA(platformLA* platform) {
 	app->m_next = new applicationQQLA(platform);
 	app = app->m_next;
 
-	//app->next = new applicationWeChatLA();
-	//app=app->next;
+	app->m_next = new applicationWeChatLA(platform);
+	app=app->m_next;
 }
 
 applicationListLA::~applicationListLA() {

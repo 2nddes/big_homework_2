@@ -78,8 +78,16 @@ bool userNodeLA::isQQEnabled()const {
 	return m_qqActivationStatus;
 }
 
+bool userNodeLA::isWeChatEnabled() const {
+	return m_wechatActivationStatus;
+}
+
 void userNodeLA::setQQStatus(bool status) {
 	m_qqActivationStatus = status;
+}
+
+void userNodeLA::setWeChatStatus(bool status) {
+	m_wechatActivationStatus = status;
 }
 
 void userNodeLA::setPhone(string phoneNumber)

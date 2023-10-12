@@ -1,7 +1,7 @@
 #ifndef QQGROUP_H
 #define QQGROUP_H
 
-#include"group.h"
+#include"/project/C++Project/cpptry2/cpptry2/src/group.h"
 #include"qquser.h"
 
 class qqGroupNodeLA :public groupNodeLA {

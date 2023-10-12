@@ -1,4 +1,4 @@
-#include"utils.h"
+#include"/project/C++Project/cpptry2/cpptry2/src/utils.h"
 #include"qqgroup.h"
 #include<fstream>
 #include<iostream>
@@ -406,5 +406,5 @@ qqGroupNodeLA* qqGroupListLA::getSentinel() {
 }
 
 int qqGroupListLA::size() const{
-	return m_qqGroupCount;
+	return m_qqGroupCount - 1001;
 }

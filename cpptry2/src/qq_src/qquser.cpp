@@ -1,6 +1,6 @@
 #include<fstream>
 #include"qquser.h"
-#include"utils.h"
+#include"/project/C++Project/cpptry2/cpptry2/src/utils.h"
 
 qqUserListLA::qqUserListLA() {
 	m_sentinel = new qqUserNodeLA(0, "sentinel", "sentinel", nullptr);
