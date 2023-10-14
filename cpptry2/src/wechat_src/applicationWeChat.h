@@ -23,6 +23,12 @@ public:
 	applicationWeChatLA(platformLA* platform);
 	virtual ~applicationWeChatLA();
 
+	bool init(userNodeLA*& curPlatformUser)override;//加载数据和初始界面
+	void exit()override;//清理加载的数据
+	void mainPage()override;//主界面
+	void loadData() override;//加载数据
+	void logOut() override;//注销
+
 	string getAppName()const override;//获取应用名
 	int getAppVersion()const override;//获取应用版本
 
@@ -30,7 +36,9 @@ public:
 	WeChatUserNodeLA* loginPage(userNodeLA*& curPlatformUser);
 	WeChatUserNodeLA* registerPage(userNodeLA*& curPlatformUser);
 
-	void mainPage();
+	WeChatUserNodeLA* findBySuperPtr(userNodeLA* superPtr) override;//通过父指针查找用户
+	WeChatUserNodeLA* findByWeChatId(int id);
+
 
 	void setUserInfoPage();//设置用户信息
 
@@ -41,6 +49,9 @@ public:
 	void deleteFriendPage();//删除好友
 	void friendRequestPage();//批阅好友申请
 	void chatWithFriendPage(WeChatUserNodeLA* friendPtr);//好友聊天界面
+	void addExternQQFriendPage();//添加外部QQ好友
+	void addBySearchFriendNamePage();//搜索好友
+	void addByWeChatIdPage();//通过微信号添加好友
 
 	void groupPage();//群根界面
 	void selectGroupPage();//选择群
@@ -59,13 +70,14 @@ public:
 	void setAdminPage(WeChatGroupNodeLA* groupPtr);//设置管理员
 	void setGroupNickNamePage(WeChatGroupNodeLA* groupPtr);//设置群昵称
 
+private:
 	//TODO:匿名聊天
 	void makeUserFile(string path);//创建用户文件
 
 	void showWeChatFriendList(vector<userInfo> friendlist);//显示好友列表
 	void showWeChatGroupList(vector<int> grouplist);//显示群列表
-	void showGroupMemberPage(int groupId);//显示群成员
-	void showGroupMemberPage(WeChatGroupNodeLA* groupPtr);//显示群成员
+	void showGroupMemberList(int groupId);//显示群成员
+	void showGroupMemberList(WeChatGroupNodeLA* groupPtr);//显示群成员
 	//申请好友
 	void applyFriend(WeChatUserNodeLA* user, WeChatUserNodeLA* friendToAdd);
 	//发送好友消息
@@ -75,14 +87,12 @@ public:
 
 	vector<WMsg> recvMsgFromFriend(WeChatUserNodeLA* friendPtr);//接收好友消息
 	vector<WMsg> recvMsgFromGroup(WeChatGroupNodeLA* groupPtr);//接收群消息
+	void loadUserFile();//加载用户文件
+	void loadGroupFile();//加载群文件
 
 	void showMsg(vector<WMsg> m);//显示消息
-	//加载数据和初始界面
-	bool init(userNodeLA*& curPlatformUser)override;
-	//清理加载的数据
-	void exit()override;
-
-private:
+	
+protected:
 	WeChatUserNodeLA* m_currentUser = nullptr;//当前用户
 
 	WeChatGroupListLA* m_allWeChatGroupList = nullptr;//所有群列表

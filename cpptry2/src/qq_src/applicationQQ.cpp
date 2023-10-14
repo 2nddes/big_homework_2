@@ -37,9 +37,8 @@ int applicationQQLA::getAppVersion()const {
 bool applicationQQLA::init(userNodeLA*& curPlatformUser) {
 	system("cls");
 
-	m_allQQGroupList = new qqGroupListLA();
+	loadData();
 
-	m_allQQUserList = new qqUserListLA();
 	while(1)
 	{
 		if (curPlatformUser == nullptr) {
@@ -60,11 +59,11 @@ bool applicationQQLA::init(userNodeLA*& curPlatformUser) {
 				return true;
 			}
 			else {
-				cout << "平台用户 "
-					<< curPlatformUser->getUserName()
-					<< " 未开通QQ服务,是否开通" << endl;
-				cout << "1.开通" << endl;
-				cout << "0.不开通" << endl;
+				cout << "平台用户" << curPlatformUser->getUserName() << " 未开通QQ服务" << endl;
+				cout << "__________________________________" << endl;
+				cout << "| 01 || 开通QQ服务                |" << endl;
+				cout << "| 00 || 退出QQ                    |" << endl;
+				cout << "__________________________________" << endl;
 				int i = 2;
 				cin >> i;
 				refreshInput();
@@ -95,17 +94,36 @@ bool applicationQQLA::init(userNodeLA*& curPlatformUser) {
 	}
 	return false;
 }
-//doing/////////////////////////////////////////////////
+void applicationQQLA::loadUserFile()
+{
+	m_allQQUserList = new qqUserListLA();
+}
+
+void applicationQQLA::loadGroupFile()
+{
+	m_allQQGroupList = new qqGroupListLA();
+}
+
+void applicationQQLA::loadData() {
+	loadUserFile();
+	loadGroupFile();
+}
+
+void applicationQQLA::logOut()
+{
+	m_currentUser = nullptr;
+}
+
 qqUserNodeLA* applicationQQLA::loginPage(userNodeLA*& curPlatformUser) {
 	while(m_currentUser == nullptr)
 	{
 		system("cls");
 		cout << "             QQ登录" << endl;
-		cout << "_________________________________" << endl;
+		cout << "___________________________________" << endl;
 		cout << "| 01 || 登录QQ                    |" << endl;
 		cout << "| 02 || 注册QQ                    |" << endl;
 		cout << "| 00 || 退出QQ                    |" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
 		int i = 0;
@@ -131,6 +149,7 @@ qqUserNodeLA* applicationQQLA::loginPage(userNodeLA*& curPlatformUser) {
 			refreshInput();
 
 			if (qqUser->getUserPasswd() == password) {
+				curPlatformUser = m_platform->findPlatformUser(qqUser->getPlatformId());
 				system("cls");
 				cout << "登录成功!"<< endl
 					<< "欢迎回来," << qqUser->getUserName() << endl;
@@ -165,10 +184,10 @@ qqUserNodeLA* applicationQQLA::registerPage(userNodeLA*& curPlatformUser) {
 	{
 		system("cls");
 		cout << "             QQ注册" << endl;
-		cout << "_________________________________" << endl;
-		cout << "| 01 || 注册QQ                    |" << endl;
-		cout << "| 00 || 退出QQ                    |" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
+		cout << "| 01 || 注册QQ                   |" << endl;
+		cout << "| 00 || 退出QQ                   |" << endl;
+		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
 		int i = 0;
@@ -188,14 +207,14 @@ qqUserNodeLA* applicationQQLA::registerPage(userNodeLA*& curPlatformUser) {
 		int id = m_allQQUserList->size() + 1;
 		system("cls");
 		cout << "             QQ注册" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "|QQ号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << id << "|" << endl;
 		cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << userName << "|" << endl;
 		cout << "|密码|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << password << "|" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "| 01 || 确认注册                  |" << endl;
 		cout << "| 00 || 取消注册                  |" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
 		i = 0;
@@ -206,7 +225,7 @@ qqUserNodeLA* applicationQQLA::registerPage(userNodeLA*& curPlatformUser) {
 				curPlatformUser = m_platform->addPlatformUser();
 				curPlatformUser->setQQStatus(true);
 				qqUserNodeLA* p = m_allQQUserList->addQQUser(userName, password);
-				p->setPlatformId(curPlatformUser->getID());
+				p->setPlatformId(curPlatformUser->getPlatformId());
 				m_allQQUserList->saveQQUserListData();
 
 				cout << "注册成功!" << endl;
@@ -215,7 +234,8 @@ qqUserNodeLA* applicationQQLA::registerPage(userNodeLA*& curPlatformUser) {
 			}
 			else {
 				qqUserNodeLA* p = m_allQQUserList->addQQUser(userName, password);
-				p->setPlatformId(curPlatformUser->getID());
+				p->setPlatformId(curPlatformUser->getPlatformId());
+				curPlatformUser->setQQStatus(true);
 				m_allQQUserList->saveQQUserListData();
 				return p;
 			}
@@ -238,21 +258,29 @@ void applicationQQLA::exit() {
 	delete m_allQQGroupList;
 	m_allQQUserList->saveQQUserListData();
 	delete m_allQQUserList;
-	cout << "已退出QQ" << endl;
-	system("pause");
+}
+
+qqUserNodeLA* applicationQQLA::findBySuperPtr(userNodeLA* superPtr)
+{
+	return m_allQQUserList->findBySuperPointer(superPtr);
+}
+
+qqUserNodeLA* applicationQQLA::findByQQId(int id)
+{
+	return m_allQQUserList->findByQQId(id);
 }
 
 void applicationQQLA::mainPage() {
 	while (1) {
 		system("cls");
 		cout << "             QQ" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "| 01 || 好友                      |" << endl;
 		cout << "| 02 || 群组                      |" << endl;
 		cout << "| 03 || 个人资料设置              |" << endl;
 		cout << "| 04 || 退出登录                  |" << endl;
 		cout << "| 00 || 退出                      |" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
 		int i = 0;
@@ -269,7 +297,7 @@ void applicationQQLA::mainPage() {
 		}
 		else if (i == 4) {
 			m_platform->logOut();
-			m_currentUser = nullptr;
+			exit();
 			return;
 		}
 		else if (i == 0) {
@@ -285,14 +313,14 @@ void applicationQQLA::setUserInfoPage()
 	{
 		system("cls");
 		cout << "             个人资料设置" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "|QQ号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << m_currentUser->getAppUserId() << "|" << endl;
 		cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << m_currentUser->getUserName() << "|" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "| 01 || 修改昵称                  |" << endl;
 		cout << "| 02 || 修改密码                  |" << endl;
 		cout << "| 00 || 返回                      |" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
 		int i = 0;

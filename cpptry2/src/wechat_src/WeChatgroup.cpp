@@ -11,11 +11,11 @@ WeChatGroupNodeLA::WeChatGroupNodeLA() {
 	m_WeChatGroupAdminsIDList.clear();
 	m_next = nullptr;
 	m_WeChatGroupInvitedIDList.clear();
-	m_isAllowAdmins = true;
-	m_isAllowInvite = true;
-	m_isAllowJoin = true;
-	m_isAllowSend = true;
-	m_isAllowSubgroup = true;
+	m_isAllowAdmins = false;
+	m_isAllowInvite = false;
+	m_isAllowJoin = false;
+	m_isAllowSend = false;
+	m_isAllowSubgroup = false;
 }
 
 WeChatGroupNodeLA::WeChatGroupNodeLA(int WeChatGroupId, string WeChatGroupName, int WeChatGroupOwnerId, WeChatGroupNodeLA* next) {
@@ -23,11 +23,11 @@ WeChatGroupNodeLA::WeChatGroupNodeLA(int WeChatGroupId, string WeChatGroupName, 
 	m_WeChatGroupName = WeChatGroupName;
 	m_WeChatGroupOwnerID = WeChatGroupOwnerId;
 	m_next = next;
-	m_isAllowAdmins = true;
-	m_isAllowInvite = true;
-	m_isAllowJoin = true;
-	m_isAllowSend = true;
-	m_isAllowSubgroup = true;
+	m_isAllowAdmins = false;
+	m_isAllowInvite = false;
+	m_isAllowJoin = false;
+	m_isAllowSend = false;
+	m_isAllowSubgroup = false;
 }
 
 WeChatGroupNodeLA::~WeChatGroupNodeLA() {

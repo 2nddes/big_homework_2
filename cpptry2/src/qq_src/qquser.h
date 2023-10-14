@@ -6,7 +6,7 @@
 
 
 
-class qqUserNodeLA:public userOfApp {
+class qqUserNodeLA:public userNodeLA {
 public:
 	qqUserNodeLA();
 	qqUserNodeLA(int QQId, string name, string password,qqUserNodeLA* next);
@@ -62,6 +62,7 @@ public:
 	void deleteQQUser(qqUserNodeLA* qqUserToDelete);
 	void deleteQQUserByQQId(int qqId);
 	void saveQQUserListData();
+	vector<userInfo> searchByName(string name)const;
 	int size()const;
 private:
 	int           m_qqUserCount = 0;

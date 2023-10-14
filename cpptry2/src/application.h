@@ -6,9 +6,6 @@ class platformLA;
 
 
 class applicationLA {
-protected:
-	string m_appName;//应用名字
-	int m_appVersion = 1;//应用版本
 public:
 	applicationLA* m_next = nullptr;
 
@@ -22,8 +19,14 @@ public:
 	virtual int getAppVersion()const;
 	virtual bool init(userNodeLA * & curPlatformUser);//初始化(比如文件)
 	virtual void mainPage();//主界面
+	virtual void loadData();//加载数据
+	virtual void logOut();//登出
+	virtual userNodeLA* findBySuperPtr(userNodeLA* superPtr);//通过父指针查找用户
 	virtual void exit();
 
+protected:
+	string m_appName;//应用名字
+	int m_appVersion = 1;//应用版本
 };
 
 class applicationListLA {

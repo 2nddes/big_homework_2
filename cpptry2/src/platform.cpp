@@ -18,10 +18,11 @@ platformLA::~platformLA() {
 
 void platformLA::run() {
 	
-	while(1){
+	while(1)
+	{
 		system("cls");
 		cout << "        欢迎使用腾讯平台" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		m_applicationList->showAllApp();
 		int count = m_applicationList->appCount();
 		cout << "| ";
@@ -32,7 +33,7 @@ void platformLA::run() {
 		cout << resetiosflags(ios::right);
 		cout << " ||设置个人资料              |" << endl;
 		cout << "| 00 ||退出                      |" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 		int i = -1;
 		cin >> i;
@@ -60,8 +61,8 @@ void platformLA::run() {
 
 }
 
-void platformLA::findPlatformUser(int id) {
-	m_currentUser = m_userList->findByUserId(id);
+userNodeLA* platformLA::findPlatformUser(int id) {
+	return m_userList->findByUserId(id);
 }
 
 userNodeLA* platformLA::addPlatformUser() {
@@ -77,12 +78,17 @@ void platformLA::setPlatformUserInfo()
 	}
 	while (1) {
 		system("cls");
-		cout << "1.修改用户名" << endl;
-		cout << "2.修改生日" << endl;
-		cout << "3.修改电话" << endl;
-		cout << "4.修改邮箱" << endl;
-		cout << "5.修改地址" << endl;
-		cout << "0.退出" << endl;
+		cout << "        个人资料设置" << endl;
+		cout << "__________________________________" << endl;
+		cout << "| 01 || 修改用户名                |" << endl;
+		cout << "| 02 || 修改生日                  |" << endl;
+		cout << "| 03 || 修改电话                  |" << endl;
+		cout << "| 04 || 修改邮箱                  |" << endl;
+		cout << "| 05 || 修改地址                  |" << endl;
+		cout << "| 00 || 退出                      |" << endl;
+		cout << "__________________________________" << endl;
+		cout << "输入选项:";
+
 		int i = -1;
 		cin >> i;
 		refreshInput();
@@ -145,4 +151,8 @@ void platformLA::setPlatformUserInfo()
 void platformLA::logOut()
 {
 	m_currentUser = nullptr;
+	for (int i = 0; i < m_applicationList->appCount(); i++)
+	{
+		m_applicationList->at(i)->logOut();
+	}
 }

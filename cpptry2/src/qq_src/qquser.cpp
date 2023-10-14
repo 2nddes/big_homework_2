@@ -65,6 +65,21 @@ void qqUserListLA::saveQQUserListData() {
 	ofs.close();
 }
 
+vector<userInfo> qqUserListLA::searchByName(string name) const {
+	vector<userInfo> result;
+	qqUserNodeLA* p = m_sentinel->getNext();
+	while ((p != nullptr) && (result.size() <= 10)) {
+		if (p->getUserName().find(name) != string::npos) {
+			userInfo info;
+			info.friendId = p->getAppUserId();
+			info.friendName = p->getUserName();
+			result.push_back(info);
+		}
+		p = p->getNext();
+	}
+	return result;
+}
+
 int qqUserListLA::size() const {
 	return m_qqUserCount;
 }
@@ -134,7 +149,7 @@ void qqUserListLA::deleteQQUserByQQId(int id) {
 qqUserNodeLA* qqUserListLA::findBySuperPointer(userNodeLA* userToFind) {
 	qqUserNodeLA* p = m_sentinel->getNext();
 	while (p != nullptr) {
-		if (p->getPlatformId() == userToFind->getID()) {
+		if (p->getPlatformId() == userToFind->getPlatformId()) {
 			return p;
 		}
 		p = p->getNext();

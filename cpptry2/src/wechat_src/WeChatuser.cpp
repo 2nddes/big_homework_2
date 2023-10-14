@@ -134,12 +134,28 @@ void WeChatUserListLA::deleteWeChatUserByWeChatId(int id) {
 WeChatUserNodeLA* WeChatUserListLA::findBySuperPointer(userNodeLA* userToFind) {
 	WeChatUserNodeLA* p = m_sentinel->getNext();
 	while (p != nullptr) {
-		if (p->getPlatformId() == userToFind->getID()) {
+		if (p->getPlatformId() == userToFind->getPlatformId()) {
 			return p;
 		}
 		p = p->getNext();
 	}
 	return nullptr;
+}
+
+vector<userInfo> WeChatUserListLA::searchByName(string name) const {
+	vector<userInfo> UserToFind;
+	WeChatUserNodeLA* p = m_sentinel->getNext();
+	while ((p != nullptr) && (UserToFind.size() <= 10)) {
+		//Ä£ºýËÑË÷
+		if (p->getUserName().find(name) != string::npos) {
+			userInfo user;
+			user.friendId = p->getAppUserId();
+			user.friendName = p->getUserName();
+			UserToFind.push_back(user);
+		}
+		p = p->getNext();
+	}
+	return UserToFind;
 }
 
 ////////////////////////////////////////////////////
@@ -176,6 +192,7 @@ bool WeChatUserNodeLA::isFriend(int friendId) const {
 }
 
 bool WeChatUserNodeLA::isFriend(WeChatUserNodeLA* friendPtr) const {
+	if (friendPtr == nullptr) return false;
 	for (size_t i = 0; i < m_WeChatFriendId.size(); i++) {
 		if (m_WeChatFriendId[i].friendId == friendPtr->getAppUserId()) {
 			return true;

@@ -23,14 +23,24 @@ public:
 	applicationQQLA(platformLA* platform);
 	virtual ~applicationQQLA();
 
+	
+	bool init(userNodeLA*& curPlatformUser)override;//加载数据和登录事宜
+	void exit()override;//清理加载的数据
+	void loadData()override;//加载数据
+	void logOut()override;//登出
+	void mainPage()override;//主界面
+	
 	string getAppName()const override;//获取应用名
 	int getAppVersion()const override;//获取应用版本
+
+	qqUserNodeLA* findBySuperPtr(userNodeLA* superPtr) override;//通过父指针查找用户
+	qqUserNodeLA* findByQQId(int id);
 
 	//参数为平台用户,登录后返回qq用户,同时登录平台用户
 	qqUserNodeLA* loginPage(userNodeLA*& curPlatformUser);
 	qqUserNodeLA* registerPage(userNodeLA*& curPlatformUser);
 	
-	void mainPage();
+
 
 	void setUserInfoPage();//设置用户信息
 
@@ -41,6 +51,9 @@ public:
 	void deleteFriendPage();//删除好友
 	void friendRequestPage();//批阅好友申请
 	void chatWithFriendPage(qqUserNodeLA* friendPtr);//好友聊天界面
+	void addExternWeChatFriendPage();//添加外部WeChat好友
+	void addBySearchFriendNamePage();//搜索好友
+	void addByQQIdPage();//通过QQ号添加好友
 
 	void groupPage();//群根界面
 	void selectGroupPage();//选择群
@@ -59,13 +72,15 @@ public:
 	void setAdminPage(qqGroupNodeLA* groupPtr);//设置管理员
 	void setGroupNickNamePage(qqGroupNodeLA* groupPtr);//设置群昵称
 
+
+private:
 	//TODO:匿名聊天
 	void makeUserFile(string path);//创建用户文件
 
 	void showQQFriendList(vector<userInfo> friendlist);//显示好友列表
 	void showQQGroupList(vector<int> grouplist);//显示群列表
-	void showGroupMemberPage(int groupId);//显示群成员
-	void showGroupMemberPage(qqGroupNodeLA* groupPtr);//显示群成员
+	void showGroupMemberList(int groupId);//显示群成员
+	void showGroupMemberList(qqGroupNodeLA* groupPtr);//显示群成员
 	//申请好友
 	void applyFriend(qqUserNodeLA* user,qqUserNodeLA* friendToAdd);
 	//发送好友消息
@@ -75,12 +90,10 @@ public:
 	
 	vector<QMsg> recvMsgFromFriend(qqUserNodeLA* friendPtr);//接收好友消息
 	vector<QMsg> recvMsgFromGroup(qqGroupNodeLA* groupPtr);//接收群消息
+	void loadUserFile();//加载用户文件
+	void loadGroupFile();//加载群文件
 
 	void showMsg(vector<QMsg> m);//显示消息
-	//加载数据和初始界面
-	bool init(userNodeLA*& curPlatformUser)override;
-	//清理加载的数据
-	void exit()override;
 
 private:
 	qqUserNodeLA*  m_currentUser = nullptr;//当前用户

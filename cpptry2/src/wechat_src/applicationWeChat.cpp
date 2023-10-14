@@ -37,9 +37,8 @@ int applicationWeChatLA::getAppVersion()const {
 bool applicationWeChatLA::init(userNodeLA*& curPlatformUser) {
 	system("cls");
 
-	m_allWeChatGroupList = new WeChatGroupListLA();
+	loadData();
 
-	m_allWeChatUserList = new WeChatUserListLA();
 	while (1)
 	{
 		if (curPlatformUser == nullptr) {
@@ -60,11 +59,12 @@ bool applicationWeChatLA::init(userNodeLA*& curPlatformUser) {
 				return true;
 			}
 			else {
-				cout << "平台用户 "
-					<< curPlatformUser->getUserName()
-					<< " 未开通WeChat服务,是否开通" << endl;
-				cout << "1.开通" << endl;
-				cout << "0.不开通" << endl;
+				cout << "平台用户" << curPlatformUser->getUserName() << " 未开通WeChat服务" << endl;
+				cout << "__________________________________" << endl;
+				cout << "| 01 || 开通WeChat服务           |" << endl;
+				cout << "| 00 || 退出WeChat               |" << endl;
+				cout << "__________________________________" << endl;
+
 				int i = 2;
 				cin >> i;
 				refreshInput();
@@ -95,17 +95,35 @@ bool applicationWeChatLA::init(userNodeLA*& curPlatformUser) {
 	}
 	return false;
 }
-//doing/////////////////////////////////////////////////
+
+void applicationWeChatLA::loadUserFile() {
+	m_allWeChatUserList = new WeChatUserListLA();
+}
+
+void applicationWeChatLA::loadGroupFile() {
+	m_allWeChatGroupList = new WeChatGroupListLA();
+}
+
+void applicationWeChatLA::loadData() {
+	loadUserFile();
+	loadGroupFile();
+}
+
+void applicationWeChatLA::logOut()
+{
+	m_currentUser = nullptr;
+}
+
 WeChatUserNodeLA* applicationWeChatLA::loginPage(userNodeLA*& curPlatformUser) {
 	while (m_currentUser == nullptr)
 	{
 		system("cls");
 		cout << "             WeChat登录" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "| 01 || 登录WeChat                |" << endl;
 		cout << "| 02 || 注册WeChat                |" << endl;
 		cout << "| 00 || 退出WeChat                |" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
 		int i = 0;
@@ -131,6 +149,7 @@ WeChatUserNodeLA* applicationWeChatLA::loginPage(userNodeLA*& curPlatformUser) {
 			refreshInput();
 
 			if (WeChatUser->getUserPasswd() == password) {
+				curPlatformUser = m_platform->findPlatformUser(WeChatUser->getPlatformId());
 				system("cls");
 				cout << "登录成功!" << endl
 					<< "欢迎回来," << WeChatUser->getUserName() << endl;
@@ -165,10 +184,10 @@ WeChatUserNodeLA* applicationWeChatLA::registerPage(userNodeLA*& curPlatformUser
 	{
 		system("cls");
 		cout << "             WeChat注册" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "| 01 || 注册WeChat                |" << endl;
 		cout << "| 00 || 退出WeChat                |" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
 		int i = 0;
@@ -188,14 +207,14 @@ WeChatUserNodeLA* applicationWeChatLA::registerPage(userNodeLA*& curPlatformUser
 		int id = m_allWeChatUserList->size() + 1;
 		system("cls");
 		cout << "             WeChat注册" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "|微号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << id << "|" << endl;
 		cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << userName << "|" << endl;
 		cout << "|密码|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << password << "|" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "| 01 || 确认注册                  |" << endl;
 		cout << "| 00 || 取消注册                  |" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
 		i = 0;
@@ -206,7 +225,7 @@ WeChatUserNodeLA* applicationWeChatLA::registerPage(userNodeLA*& curPlatformUser
 				curPlatformUser = m_platform->addPlatformUser();
 				curPlatformUser->setWeChatStatus(true);
 				WeChatUserNodeLA* p = m_allWeChatUserList->addWeChatUser(userName, password);
-				p->setPlatformId(curPlatformUser->getID());
+				p->setPlatformId(curPlatformUser->getPlatformId());
 				m_allWeChatUserList->saveWeChatUserListData();
 
 				cout << "注册成功!" << endl;
@@ -215,7 +234,8 @@ WeChatUserNodeLA* applicationWeChatLA::registerPage(userNodeLA*& curPlatformUser
 			}
 			else {
 				WeChatUserNodeLA* p = m_allWeChatUserList->addWeChatUser(userName, password);
-				p->setPlatformId(curPlatformUser->getID());
+				p->setPlatformId(curPlatformUser->getPlatformId());
+				curPlatformUser->setWeChatStatus(true);
 				m_allWeChatUserList->saveWeChatUserListData();
 				return p;
 			}
@@ -233,26 +253,35 @@ WeChatUserNodeLA* applicationWeChatLA::registerPage(userNodeLA*& curPlatformUser
 	}
 }
 
+WeChatUserNodeLA* applicationWeChatLA::findBySuperPtr(userNodeLA* superPtr)
+{
+	return m_allWeChatUserList->findBySuperPointer(superPtr);
+}
+
+WeChatUserNodeLA* applicationWeChatLA::findByWeChatId(int id)
+{
+	return m_allWeChatUserList->findByWeChatId(id);
+}
+
 void applicationWeChatLA::exit() {
 	m_allWeChatGroupList->saveGroupListData();
 	delete m_allWeChatGroupList;
 	m_allWeChatUserList->saveWeChatUserListData();
 	delete m_allWeChatUserList;
-	cout << "已退出WeChat" << endl;
-	system("pause");
 }
 
 void applicationWeChatLA::mainPage() {
 	while (1) {
 		system("cls");
 		cout << "             WeChat" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "| 01 || 好友                      |" << endl;
 		cout << "| 02 || 群组                      |" << endl;
 		cout << "| 03 || 个人资料设置              |" << endl;
 		cout << "| 04 || 退出登录                  |" << endl;
-		cout << "| 00 || 退出                      |" << endl;
-		cout << "_________________________________" << endl;
+		cout << "| 05 || 绑定其他应用              |" << endl;
+		cout << "| 00 || 退出WeChat                |" << endl;
+		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
 		int i = 0;
@@ -269,8 +298,11 @@ void applicationWeChatLA::mainPage() {
 		}
 		else if (i == 4) {
 			m_platform->logOut();
-			m_currentUser = nullptr;
+			exit();
 			return;
+		}
+		else if (i == 5) {
+			//TODO
 		}
 		else if (i == 0) {
 			exit();
@@ -285,14 +317,14 @@ void applicationWeChatLA::setUserInfoPage()
 	{
 		system("cls");
 		cout << "             个人资料设置" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "|微号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << m_currentUser->getAppUserId() << "|" << endl;
 		cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << m_currentUser->getUserName() << "|" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "| 01 || 修改昵称                  |" << endl;
 		cout << "| 02 || 修改密码                  |" << endl;
 		cout << "| 00 || 返回                      |" << endl;
-		cout << "_________________________________" << endl;
+		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
 		int i = 0;

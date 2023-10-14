@@ -4,7 +4,7 @@
 #include<vector>
 #include"/project/C++Project/cpptry2/cpptry2/src/user.h"
 
-class WeChatUserNodeLA :public userOfApp {
+class WeChatUserNodeLA :public userNodeLA {
 public:
 	WeChatUserNodeLA();
 	WeChatUserNodeLA(int WeChatId, string name, string password, WeChatUserNodeLA* next);
@@ -60,6 +60,7 @@ public:
 	void deleteWeChatUser(WeChatUserNodeLA* WeChatUserToDelete);
 	void deleteWeChatUserByWeChatId(int WeChatId);
 	void saveWeChatUserListData();
+	vector<userInfo> searchByName(string name)const;
 	int size()const;
 private:
 	int           m_WeChatUserCount = 0;

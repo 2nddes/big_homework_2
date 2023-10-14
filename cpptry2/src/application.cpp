@@ -123,6 +123,21 @@ void applicationLA::mainPage()
 	throw "非法调用基application的mainPage()";
 }
 
+void applicationLA::loadData()
+{
+	throw "非法调用基application的loadData()";
+}
+
+void applicationLA::logOut()
+{
+	throw "非法调用基application的logOut()";
+}
+
+userNodeLA* applicationLA::findBySuperPtr(userNodeLA* superPtr)
+{
+	return nullptr;
+}
+
 void applicationLA::exit() {
 	throw "非法调用基application的exit()";
 }

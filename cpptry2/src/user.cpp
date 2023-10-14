@@ -8,37 +8,57 @@ userNodeLA::userNodeLA() {
 	m_birth = 20000101;
 	m_address = "无";
 	m_next = nullptr;
-	m_userId = -1;
+	m_platformId = -1;
 }
 
 userNodeLA::userNodeLA(int userID, string userName, int birth, string address, userNodeLA* next) {
-	m_userId = userID;
+	m_platformId = userID;
 	m_userName = userName;
 	m_birth = birth;
 	m_address = address;
 	m_next = next;
-	m_userId = userID;
+	m_platformId = userID;
 	m_qqActivationStatus = false;
 }
 
-userNodeLA::userNodeLA(int userID, string userName, int birth, string address, bool qqActivationStatus, userNodeLA* next) {
-	m_userId = userID;
+userNodeLA::userNodeLA(int userID, string userName, int birth, string address, bool qqActivationStatus, bool WeChatActivationStatus, userNodeLA* next) {
+	m_platformId = userID;
 	m_userName = userName;
 	m_birth = birth;
 	m_address = address;
 	m_next = next;
-	m_userId = userID;
+	m_platformId = userID;
 	m_qqActivationStatus = qqActivationStatus;
+	m_wechatActivationStatus = WeChatActivationStatus;
 }
 
 userNodeLA::~userNodeLA() {}
 
-int userNodeLA::getID()const {
-	return m_userId;
+int userNodeLA::getPlatformId()const {
+	return m_platformId;
 }
 
 string userNodeLA::getUserName()const {
 	return m_userName;
+}
+
+string userNodeLA::getUserPasswd() const
+{
+	return string();
+}
+
+int userNodeLA::getAppUserId() const
+{
+	return -1;
+}
+
+void userNodeLA::setPlatformId(int platformId)
+{
+	m_platformId = platformId;
+}
+
+void userNodeLA::setAppUserId(int appUserId)
+{
 }
 
 int userNodeLA::getBirth()const {
@@ -64,6 +84,10 @@ void userNodeLA::setNext(userNodeLA* next) {
 
 void userNodeLA::setUserName(string userName) {
 	m_userName = userName;
+}
+
+void userNodeLA::setUserPasswd(string userPassword)
+{
 }
 
 void userNodeLA::setBirth(int birth) {
@@ -114,14 +138,14 @@ userListLA::~userListLA() {
 }
 
 userNodeLA* userListLA::addUser() {
-	userNodeLA* userToAdd = new userNodeLA(m_userCount++, "无", 20000101, "无", false, m_sentinel->getNext());
+	userNodeLA* userToAdd = new userNodeLA(m_userCount++, "无", 20000101, "无", false, false, m_sentinel->getNext());
 	m_sentinel->setNext(userToAdd);
 	saveUserList();
 	return userToAdd;
 }
 
 userNodeLA* userListLA::addUser(string userName, int birth, string address) {
-	userNodeLA* userToAdd = new userNodeLA(m_userCount++, userName, birth, address, false, m_sentinel->getNext());
+	userNodeLA* userToAdd = new userNodeLA(m_userCount++, userName, birth, address, false, false, m_sentinel->getNext());
 	m_sentinel->setNext(userToAdd);
 	saveUserList();
 	return userToAdd;
@@ -141,7 +165,7 @@ userNodeLA* userListLA::findByUserName(string userName)const {
 userNodeLA* userListLA::findByUserId(int id)const {
 	userNodeLA* temp = m_sentinel->getNext();
 	while (temp != NULL) {
-		if (temp->getID() == id) {
+		if (temp->getPlatformId() == id) {
 			return temp;
 		}
 		temp = temp->getNext();
@@ -162,10 +186,11 @@ void userListLA::loadUserList() {
 	int TAge;
 	string address;
 	bool qqActivationStatus;
+	bool wechatActivationStatus;
 
 	fin >> m_userCount;
-	while (fin >> userId >> userName >> birth >> TAge >> address >> qqActivationStatus) {
-		userNodeLA* userToAdd = new userNodeLA(userId, userName, birth, address, qqActivationStatus, m_sentinel->getNext());
+	while (fin >> userId >> userName >> birth >> TAge >> address >> qqActivationStatus >>wechatActivationStatus) {
+		userNodeLA* userToAdd = new userNodeLA(userId, userName, birth, address, qqActivationStatus, wechatActivationStatus, m_sentinel->getNext());
 		m_sentinel->setNext(userToAdd);
 	}
 
@@ -183,12 +208,13 @@ void userListLA::saveUserList()const {
 	userNodeLA* temp = m_sentinel->getNext();
 
 	while (temp != NULL) {
-		fout << temp->getID() << " "
-			 << temp->getUserName()<< " "
-			 << temp->getBirth()<< " "
-			 << temp->getTAge()<< " "
-			 << temp->getAddress()<< " "
-			 << temp->isQQEnabled()<< " ";
+		fout << temp->getPlatformId() << " "
+			<< temp->getUserName() << " "
+			<< temp->getBirth() << " "
+			<< temp->getTAge() << " "
+			<< temp->getAddress() << " "
+			<< temp->isQQEnabled() << " "
+			<< temp->isWeChatEnabled() << " ";
 		temp = temp->getNext();
 	}
 
