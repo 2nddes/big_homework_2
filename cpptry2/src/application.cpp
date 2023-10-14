@@ -39,7 +39,7 @@ applicationListLA::~applicationListLA() {
 	}
 }
 
-applicationLA* applicationListLA::at(int index) {
+applicationLA* applicationListLA::at(int index)const {
 	applicationLA* app = m_sentinel;
 	for (int i = 0; i < index&&app!=nullptr; ++i) {
 		app = app->m_next;
@@ -48,7 +48,7 @@ applicationLA* applicationListLA::at(int index) {
 	return app;
 }
 
-void applicationListLA::showAllApp()
+void applicationListLA::showAllApp()const
 {
 	applicationLA* app = this->getSentinel();
 	int i = 0;
@@ -69,8 +69,7 @@ void applicationListLA::showAllApp()
 	cout << resetiosflags(ios::left);
 }
 
-int applicationListLA::appCount()
-{
+int applicationListLA::appCount()const {
 	applicationLA* app = this->getSentinel();
 	int i = 0;
 
@@ -81,7 +80,7 @@ int applicationListLA::appCount()
 	return i;
 }
 
-applicationLA* applicationListLA::getSentinel() {
+applicationLA* applicationListLA::getSentinel()const {
 	return m_sentinel;
 }
 ///////////////appList/////////////////
@@ -95,11 +94,11 @@ applicationLA::~applicationLA() {
 
 }
 
-bool applicationLA::hasNext() {
+bool applicationLA::hasNext()const {
 	return m_next != nullptr;
 }
 
-applicationLA* applicationLA::getNext() {
+applicationLA* applicationLA::getNext()const {
 	if (this == nullptr) {
 		return nullptr;
 	}
@@ -133,7 +132,7 @@ void applicationLA::logOut()
 	throw "非法调用基application的logOut()";
 }
 
-userNodeLA* applicationLA::findBySuperPtr(userNodeLA* superPtr)
+userNodeLA* applicationLA::findBySuperPtr(userNodeLA* superPtr)const
 {
 	return nullptr;
 }

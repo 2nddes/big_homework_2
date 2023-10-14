@@ -38,7 +38,7 @@ qqUserListLA::qqUserListLA() {
 	ifs.close();
 }
 
-void qqUserListLA::saveQQUserListData() {
+void qqUserListLA::saveQQUserListData()const {
 	ofstream ofs;
 	ofs.open("QQ\\qqusers.dat", ios::out);//清除原有数据
 	qqUserNodeLA* p = m_sentinel->getNext();
@@ -94,7 +94,7 @@ qqUserListLA::~qqUserListLA() {
 	delete m_sentinel;
 }
 
-qqUserNodeLA* qqUserListLA::findByQQId(int id) {
+qqUserNodeLA* qqUserListLA::findByQQId(int id)const {
 	qqUserNodeLA* p = m_sentinel->getNext();
 	while (p != nullptr) {
 		if (p->getAppUserId() == id) {
@@ -105,7 +105,7 @@ qqUserNodeLA* qqUserListLA::findByQQId(int id) {
 	return nullptr;
 }
 
-qqUserNodeLA* qqUserListLA::findBySuperId(int id) {
+qqUserNodeLA* qqUserListLA::findBySuperId(int id)const {
 	qqUserNodeLA* p = m_sentinel->getNext();
 	while (p != nullptr) {
 		if (p->getPlatformId() == id) {
@@ -146,7 +146,7 @@ void qqUserListLA::deleteQQUserByQQId(int id) {
 	}
 }
 
-qqUserNodeLA* qqUserListLA::findBySuperPointer(userNodeLA* userToFind) {
+qqUserNodeLA* qqUserListLA::findBySuperPointer(userNodeLA* userToFind)const {
 	qqUserNodeLA* p = m_sentinel->getNext();
 	while (p != nullptr) {
 		if (p->getPlatformId() == userToFind->getPlatformId()) {

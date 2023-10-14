@@ -61,7 +61,7 @@ void platformLA::run() {
 
 }
 
-userNodeLA* platformLA::findPlatformUser(int id) {
+userNodeLA* platformLA::findPlatformUser(int id)const {
 	return m_userList->findByUserId(id);
 }
 

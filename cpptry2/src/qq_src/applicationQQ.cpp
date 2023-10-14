@@ -260,12 +260,12 @@ void applicationQQLA::exit() {
 	delete m_allQQUserList;
 }
 
-qqUserNodeLA* applicationQQLA::findBySuperPtr(userNodeLA* superPtr)
+qqUserNodeLA* applicationQQLA::findBySuperPtr(userNodeLA* superPtr)const
 {
 	return m_allQQUserList->findBySuperPointer(superPtr);
 }
 
-qqUserNodeLA* applicationQQLA::findByQQId(int id)
+qqUserNodeLA* applicationQQLA::findByQQId(int id)const
 {
 	return m_allQQUserList->findByQQId(id);
 }
@@ -377,7 +377,7 @@ void applicationQQLA::setUserInfoPage()
 	}
 }
 
-void applicationQQLA::makeUserFile(string path){
+void applicationQQLA::makeUserFile(string path)const {
 	//创建用户文件夹
 	My_mkdir(path.c_str());
 

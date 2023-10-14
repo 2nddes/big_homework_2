@@ -23,7 +23,7 @@ public:
 	bool isAllowInvite()const;
 	bool isAllowAdmins()const;
 
-	void addMember(int userId)override;//添加成员//TODO
+	void addMember(int userId)override;//添加成员
 	void changeOwner(int userId)override;
 	void removeMember(int userId)override;//注意是否为最后一人
 	void removeMember(vector<int> userIdList);//注意是否为最后一人
@@ -72,13 +72,13 @@ public:
 	qqGroupListLA();
 	~qqGroupListLA();
 
-	void saveGroupListData();
+	void saveGroupListData()const;
 	void addGroup(qqGroupNodeLA* node);
 	void removeGroup(qqGroupNodeLA* node);
 
 	qqGroupNodeLA* addGroup(string qqGroupName, int qqGroupOwnerID);
-	qqGroupNodeLA* findByGroupId(int qqGroupId);
-	qqGroupNodeLA* getSentinel();
+	qqGroupNodeLA* findByGroupId(int qqGroupId)const;
+	qqGroupNodeLA* getSentinel()const;
 	int size()const;
 private:
 	qqGroupNodeLA* m_sentinel;

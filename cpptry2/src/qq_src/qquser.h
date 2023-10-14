@@ -32,7 +32,7 @@ public:
 	void addQQFriendInfo(userInfo friendInfo);
 	void addQQGroupId(int groupId);
 
-	void deleteQQFriendId(int friendId);//TODO:点对点通信
+	void deleteQQFriendId(int friendId);
 	void deleteQQGroupId(int groupId);
 
 	void setNext(qqUserNodeLA* next);
@@ -54,14 +54,14 @@ public:
 	qqUserListLA();
 	~qqUserListLA();
 	
-	qqUserNodeLA* findByQQId(int id);
-	qqUserNodeLA* findBySuperId(int id);
-	qqUserNodeLA* findBySuperPointer(userNodeLA* userToFind);
+	qqUserNodeLA* findByQQId(int id)const;
+	qqUserNodeLA* findBySuperId(int id)const;
+	qqUserNodeLA* findBySuperPointer(userNodeLA* userToFind)const;
 
 	qqUserNodeLA* addQQUser(string qqName,string qqPassword);
 	void deleteQQUser(qqUserNodeLA* qqUserToDelete);
 	void deleteQQUserByQQId(int qqId);
-	void saveQQUserListData();
+	void saveQQUserListData()const;
 	vector<userInfo> searchByName(string name)const;
 	int size()const;
 private:

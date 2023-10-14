@@ -740,7 +740,7 @@ vector<QMsg> applicationQQLA::recvMsgFromFriend(qqUserNodeLA* friendPtr)
 	return msgList;
 }
 //TODO:color
-void applicationQQLA::showQQFriendList(vector<userInfo> friendlist) {
+void applicationQQLA::showQQFriendList(vector<userInfo> friendlist)const {
 	if (friendlist.size() == 0)
 	{
 		cout << "        您没有任何好友" << endl;

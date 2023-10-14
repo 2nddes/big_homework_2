@@ -25,7 +25,7 @@ public:
 
 	bool init(userNodeLA*& curPlatformUser)override;//加载数据和初始界面
 	void exit()override;//清理加载的数据
-	void mainPage()override;//主界面
+	void mainPage() override;//主界面
 	void loadData() override;//加载数据
 	void logOut() override;//注销
 
@@ -36,8 +36,8 @@ public:
 	WeChatUserNodeLA* loginPage(userNodeLA*& curPlatformUser);
 	WeChatUserNodeLA* registerPage(userNodeLA*& curPlatformUser);
 
-	WeChatUserNodeLA* findBySuperPtr(userNodeLA* superPtr) override;//通过父指针查找用户
-	WeChatUserNodeLA* findByWeChatId(int id);
+	WeChatUserNodeLA* findBySuperPtr(userNodeLA* superPtr)const override;//通过父指针查找用户
+	WeChatUserNodeLA* findByWeChatId(int id)const;
 
 
 	void setUserInfoPage();//设置用户信息

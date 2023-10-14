@@ -12,8 +12,8 @@ public:
 	applicationLA();
 	virtual ~applicationLA();
 
-	bool hasNext();
-	applicationLA* getNext();
+	bool hasNext()const;
+	applicationLA* getNext()const;
 
 	virtual string getAppName()const;
 	virtual int getAppVersion()const;
@@ -21,7 +21,7 @@ public:
 	virtual void mainPage();//主界面
 	virtual void loadData();//加载数据
 	virtual void logOut();//登出
-	virtual userNodeLA* findBySuperPtr(userNodeLA* superPtr);//通过父指针查找用户
+	virtual userNodeLA* findBySuperPtr(userNodeLA* superPtr)const;//通过父指针查找用户
 	virtual void exit();
 
 protected:
@@ -32,16 +32,15 @@ protected:
 class applicationListLA {
 private:
 	applicationLA* m_sentinel;
-
 	
 public:
 	applicationListLA();
 	applicationListLA(platformLA* platform);
 	~applicationListLA();
 	
-	applicationLA* getSentinel();
-	applicationLA* at(int index);
-	void showAllApp();
-	int appCount();
+	applicationLA* getSentinel()const;
+	applicationLA* at(int index)const;
+	void showAllApp()const;
+	int appCount()const;
 };
 #endif // !APPLICATION_H

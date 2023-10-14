@@ -50,16 +50,16 @@ private:
 class WeChatUserListLA {
 public:
 	WeChatUserListLA();
-	~WeChatUserListLA();
+	virtual ~WeChatUserListLA();
 
-	WeChatUserNodeLA* findByWeChatId(int id);
-	WeChatUserNodeLA* findBySuperId(int id);
-	WeChatUserNodeLA* findBySuperPointer(userNodeLA* userToFind);
+	WeChatUserNodeLA* findByWeChatId(int id)const;
+	WeChatUserNodeLA* findBySuperId(int id)const;
+	WeChatUserNodeLA* findBySuperPointer(userNodeLA* userToFind)const;
 
 	WeChatUserNodeLA* addWeChatUser(string WeChatName, string WeChatPassword);
 	void deleteWeChatUser(WeChatUserNodeLA* WeChatUserToDelete);
 	void deleteWeChatUserByWeChatId(int WeChatId);
-	void saveWeChatUserListData();
+	void saveWeChatUserListData()const;
 	vector<userInfo> searchByName(string name)const;
 	int size()const;
 private:

@@ -33,8 +33,8 @@ public:
 	string getAppName()const override;//获取应用名
 	int getAppVersion()const override;//获取应用版本
 
-	qqUserNodeLA* findBySuperPtr(userNodeLA* superPtr) override;//通过父指针查找用户
-	qqUserNodeLA* findByQQId(int id);
+	qqUserNodeLA* findBySuperPtr(userNodeLA* superPtr)const override;//通过父指针查找用户
+	qqUserNodeLA* findByQQId(int id)const;
 
 	//参数为平台用户,登录后返回qq用户,同时登录平台用户
 	qqUserNodeLA* loginPage(userNodeLA*& curPlatformUser);
@@ -75,12 +75,12 @@ public:
 
 private:
 	//TODO:匿名聊天
-	void makeUserFile(string path);//创建用户文件
+	void makeUserFile(string path)const;//创建用户文件
 
-	void showQQFriendList(vector<userInfo> friendlist);//显示好友列表
-	void showQQGroupList(vector<int> grouplist);//显示群列表
-	void showGroupMemberList(int groupId);//显示群成员
-	void showGroupMemberList(qqGroupNodeLA* groupPtr);//显示群成员
+	void showQQFriendList(vector<userInfo> friendlist)const; //显示好友列表
+	void showQQGroupList(vector<int> grouplist)const; //显示群列表
+	void showGroupMemberList(int groupId)const; //显示群成员
+	void showGroupMemberList(qqGroupNodeLA* groupPtr)const; //显示群成员
 	//申请好友
 	void applyFriend(qqUserNodeLA* user,qqUserNodeLA* friendToAdd);
 	//发送好友消息

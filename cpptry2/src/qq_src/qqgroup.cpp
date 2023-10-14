@@ -251,7 +251,7 @@ qqGroupListLA::qqGroupListLA() {
 		cout << "qqgroups.dat not found!" << endl;
 		return;
 	}
-	///////////////////////////TODO////////////////////////
+
 	int qqGroupNum = 0;
 	string qqGroupName;
 	int qqGroupMemberCount = 0;
@@ -311,7 +311,6 @@ qqGroupListLA::qqGroupListLA() {
 
 	}
 	fin.close();
-	///////////////////////////TODO///////////////////////////
 }
 
 
@@ -326,7 +325,7 @@ qqGroupListLA::~qqGroupListLA() {
 	delete m_sentinel;
 }
 
-void qqGroupListLA::saveGroupListData() {
+void qqGroupListLA::saveGroupListData()const {
 	ofstream fout("QQ\\qqgroups.dat",ios::out);
 	if (!fout) {
 		cout << "qqgroups.dat not found!" << endl;
@@ -390,7 +389,7 @@ void qqGroupListLA::removeGroup(qqGroupNodeLA* node) {
 	delete node;
 }
 
-qqGroupNodeLA* qqGroupListLA::findByGroupId(int qqGroupId) {
+qqGroupNodeLA* qqGroupListLA::findByGroupId(int qqGroupId)const {
 	qqGroupNodeLA* p = m_sentinel->getNext();
 	while (p != nullptr) {
 		if (p->getGroupId() == qqGroupId) {
@@ -401,7 +400,7 @@ qqGroupNodeLA* qqGroupListLA::findByGroupId(int qqGroupId) {
 	return nullptr;
 }
 
-qqGroupNodeLA* qqGroupListLA::getSentinel() {
+qqGroupNodeLA* qqGroupListLA::getSentinel()const {
 	return m_sentinel;
 }
 

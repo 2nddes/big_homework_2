@@ -1110,7 +1110,7 @@ bool applicationQQLA::sendMsgToGroup(qqGroupNodeLA* groupPtr, const char* msg) {
 	return true;
 }
 
-void applicationQQLA::showQQGroupList(vector<int> grouplist) {
+void applicationQQLA::showQQGroupList(vector<int> grouplist)const {
 	if (grouplist.size() == 0)
 	{
 		cout << "       您没有加入任何群" << endl;
@@ -1130,12 +1130,12 @@ void applicationQQLA::showQQGroupList(vector<int> grouplist) {
 	return;
 }
 
-void applicationQQLA::showGroupMemberList(int groupId) {
+void applicationQQLA::showGroupMemberList(int groupId)const {
 	qqGroupNodeLA* groupPtr = m_allQQGroupList->findByGroupId(groupId);
 	showGroupMemberList(groupPtr);
 }
 //TODO:color
-void applicationQQLA::showGroupMemberList(qqGroupNodeLA* groupPtr) {
+void applicationQQLA::showGroupMemberList(qqGroupNodeLA* groupPtr)const {
 	system("cls");
 	vector<userInfo> memberList = groupPtr->getQQGroupMemberInfoList();
 	cout << "          群成员列表(" << memberList.size() << ")" << endl;

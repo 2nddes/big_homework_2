@@ -38,7 +38,7 @@ WeChatUserListLA::WeChatUserListLA() {
 	ifs.close();
 }
 
-void WeChatUserListLA::saveWeChatUserListData() {
+void WeChatUserListLA::saveWeChatUserListData()const {
 	ofstream ofs;
 	ofs.open("WeChat\\WeChatusers.dat", ios::out);//清除原有数据
 	WeChatUserNodeLA* p = m_sentinel->getNext();
@@ -79,7 +79,7 @@ WeChatUserListLA::~WeChatUserListLA() {
 	delete m_sentinel;
 }
 
-WeChatUserNodeLA* WeChatUserListLA::findByWeChatId(int id) {
+WeChatUserNodeLA* WeChatUserListLA::findByWeChatId(int id)const {
 	WeChatUserNodeLA* p = m_sentinel->getNext();
 	while (p != nullptr) {
 		if (p->getAppUserId() == id) {
@@ -90,7 +90,7 @@ WeChatUserNodeLA* WeChatUserListLA::findByWeChatId(int id) {
 	return nullptr;
 }
 
-WeChatUserNodeLA* WeChatUserListLA::findBySuperId(int id) {
+WeChatUserNodeLA* WeChatUserListLA::findBySuperId(int id)const {
 	WeChatUserNodeLA* p = m_sentinel->getNext();
 	while (p != nullptr) {
 		if (p->getPlatformId() == id) {
@@ -131,7 +131,7 @@ void WeChatUserListLA::deleteWeChatUserByWeChatId(int id) {
 	}
 }
 
-WeChatUserNodeLA* WeChatUserListLA::findBySuperPointer(userNodeLA* userToFind) {
+WeChatUserNodeLA* WeChatUserListLA::findBySuperPointer(userNodeLA* userToFind)const {
 	WeChatUserNodeLA* p = m_sentinel->getNext();
 	while (p != nullptr) {
 		if (p->getPlatformId() == userToFind->getPlatformId()) {

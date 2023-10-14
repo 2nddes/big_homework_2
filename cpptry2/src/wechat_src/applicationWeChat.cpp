@@ -253,12 +253,12 @@ WeChatUserNodeLA* applicationWeChatLA::registerPage(userNodeLA*& curPlatformUser
 	}
 }
 
-WeChatUserNodeLA* applicationWeChatLA::findBySuperPtr(userNodeLA* superPtr)
+WeChatUserNodeLA* applicationWeChatLA::findBySuperPtr(userNodeLA* superPtr)const
 {
 	return m_allWeChatUserList->findBySuperPointer(superPtr);
 }
 
-WeChatUserNodeLA* applicationWeChatLA::findByWeChatId(int id)
+WeChatUserNodeLA* applicationWeChatLA::findByWeChatId(int id)const
 {
 	return m_allWeChatUserList->findByWeChatId(id);
 }
@@ -279,7 +279,6 @@ void applicationWeChatLA::mainPage() {
 		cout << "| 02 || 群组                      |" << endl;
 		cout << "| 03 || 个人资料设置              |" << endl;
 		cout << "| 04 || 退出登录                  |" << endl;
-		cout << "| 05 || 绑定其他应用              |" << endl;
 		cout << "| 00 || 退出WeChat                |" << endl;
 		cout << "__________________________________" << endl;
 		cout << "输入选项:";
@@ -300,9 +299,6 @@ void applicationWeChatLA::mainPage() {
 			m_platform->logOut();
 			exit();
 			return;
-		}
-		else if (i == 5) {
-			//TODO
 		}
 		else if (i == 0) {
 			exit();

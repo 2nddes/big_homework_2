@@ -18,7 +18,7 @@ public:
 	virtual ~platformLA();
 
 	void run();
-	userNodeLA* findPlatformUser(int id);
+	userNodeLA* findPlatformUser(int id)const;
 	userNodeLA* addPlatformUser();
 	void setPlatformUserInfo();
 	void logOut();
