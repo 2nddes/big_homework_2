@@ -62,7 +62,7 @@ bool applicationWeChatLA::init(userNodeLA*& curPlatformUser) {
 				cout << "平台用户" << curPlatformUser->getUserName() << " 未开通WeChat服务" << endl;
 				cout << "__________________________________" << endl;
 				cout << "| 01 || 开通WeChat服务           |" << endl;
-				cout << "| 00 || 退出WeChat               |" << endl;
+				cout << "|其他|| 退出WeChat               |" << endl;
 				cout << "__________________________________" << endl;
 
 				int i = 2;
@@ -81,13 +81,8 @@ bool applicationWeChatLA::init(userNodeLA*& curPlatformUser) {
 						return true;
 					}
 				}
-				else if (i == 0) {
-					exit();
-					return false;
-				}
 				else {
-					cout << "输入错误" << endl;
-					system("pause");
+					exit();
 					return false;
 				}
 			}
@@ -143,7 +138,7 @@ WeChatUserNodeLA* applicationWeChatLA::loginPage(userNodeLA*& curPlatformUser) {
 				continue;
 			}
 
-			cout << "请输入密码(不含空格等特殊字符):";
+			cout << "请输入密码:";
 			string password;
 			cin >> password;
 			refreshInput();
@@ -263,6 +258,17 @@ WeChatUserNodeLA* applicationWeChatLA::findByWeChatId(int id)const
 	return m_allWeChatUserList->findByWeChatId(id);
 }
 
+void applicationWeChatLA::showPersonalInfoPage(WeChatUserNodeLA* user) const
+{
+	cout << "          个人信息" << endl;
+	cout << "__________________________________" << endl;
+	cout << "|微号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << user->getAppUserId() << "|" << endl;
+	cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << user->getUserName() << "|" << endl;
+	cout << "__________________________________" << endl;
+	system("pause");
+	return;
+}
+
 void applicationWeChatLA::exit() {
 	m_allWeChatGroupList->saveGroupListData();
 	delete m_allWeChatGroupList;
@@ -327,13 +333,11 @@ void applicationWeChatLA::setUserInfoPage()
 		cin >> i;
 		refreshInput();
 		if (i == 1) {
-			cout << "输入新昵称(不含空格等特殊字符,直接回车返回):" << endl;
+			cout << "输入新昵称(不含空格等特殊字符):" << endl;
 			string name;
 			cin >> name;
 			refreshInput();
-			if (name == "") {
-				continue;
-			}
+
 			m_currentUser->setUserName(name);
 			m_allWeChatUserList->saveWeChatUserListData();
 			system("cls");
@@ -352,12 +356,10 @@ void applicationWeChatLA::setUserInfoPage()
 				system("pause");
 				continue;
 			}
-			cout << "输入新密码(不含空格等特殊字符,直接回车返回):";
+			cout << "输入新密码(不含空格等特殊字符):";
 			cin >> password;
 			refreshInput();
-			if (password == "") {
-				continue;
-			}
+
 			m_currentUser->setUserPasswd(password);
 			m_allWeChatUserList->saveWeChatUserListData();
 			system("cls");
@@ -391,8 +393,34 @@ void applicationWeChatLA::makeUserFile(string path) {
 	My_mkdir((path + "\\groupchatrecord").c_str());
 
 }
+
+void applicationWeChatLA::clearChatRecord(WeChatUserNodeLA* friendPtr)
+{
+	string path = "WeChat\\" + to_string(m_currentUser->getAppUserId()) + "\\chatrecord\\" + to_string(friendPtr->getAppUserId()) + ".dat";
+	//判断文件是否存在,不存在则创建
+	if (_access(path.c_str(), 0) == -1) {
+		ofstream outFile;
+		outFile.open(path, ios::out);
+		outFile.close();
+	}
+	ofstream ofs(path, ios::out);
+	if (!ofs.is_open()) {
+		cout << "打开文件失败" << endl;
+		return;
+	}
+	ofs.close();
+}
+
+void applicationWeChatLA::clearChatRecord(WeChatGroupNodeLA* groupPtr)
+{
+	string path = "WeChat\\" + to_string(m_currentUser->getAppUserId()) + "\\groupchatrecord\\" + to_string(groupPtr->getGroupId()) + ".dat";
+	if (_access(path.c_str(), 0) != -1) {
+		remove(path.c_str());
+	}
+	return;
+}
 //TODO:color
-void applicationWeChatLA::showMsg(vector<WMsg> m) {
+void applicationWeChatLA::showMsg(const vector<WMsg>& m) {
 	if (m.size() == 0) {
 		cout << "            目前无消息" << endl;
 		return;
@@ -409,5 +437,6 @@ void applicationWeChatLA::showMsg(vector<WMsg> m) {
 				<< m[i].msg << endl;
 
 		}
+		cout << "__________________________________" << endl;
 	}
 }

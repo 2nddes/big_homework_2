@@ -64,6 +64,12 @@ void WeChatGroupNodeLA::setNext(WeChatGroupNodeLA* next) {
 }
 
 void WeChatGroupNodeLA::addMember(int userId) {
+	//检查是否已经是成员
+	for (auto it = m_WeChatGroupMemberInfoList.begin(); it != m_WeChatGroupMemberInfoList.end(); it++) {
+		if (it->friendId == userId) {
+			return;
+		}
+	}
 	userInfo memberInfo;
 	memberInfo.friendId = userId;
 	memberInfo.friendName = "无";
@@ -71,6 +77,12 @@ void WeChatGroupNodeLA::addMember(int userId) {
 }
 
 void WeChatGroupNodeLA::addWeChatGroupAdmin(int userId) {
+	//检查是否已经是管理员
+	for (auto it = m_WeChatGroupAdminsIDList.begin(); it != m_WeChatGroupAdminsIDList.end(); it++) {
+		if (it->friendId == userId) {
+			return;
+		}
+	}
 	userInfo adminInfo;
 	adminInfo.friendId = userId;
 	adminInfo.friendName = "无";
@@ -78,6 +90,12 @@ void WeChatGroupNodeLA::addWeChatGroupAdmin(int userId) {
 }
 
 void WeChatGroupNodeLA::addRequest(userInfo userinfo) {
+	//检查是否已经是申请人
+	for (auto it = m_WeChatGroupInvitedIDList.begin(); it != m_WeChatGroupInvitedIDList.end(); it++) {
+		if (it->friendId == userinfo.friendId) {
+			return;
+		}
+	}
 	m_WeChatGroupInvitedIDList.push_back(userinfo);
 }
 
@@ -85,7 +103,7 @@ void WeChatGroupNodeLA::removeRequest(int userId) {
 	for (int i = 0; i < m_WeChatGroupInvitedIDList.size(); i++) {
 		if (userId == m_WeChatGroupInvitedIDList[i].friendId) {
 			m_WeChatGroupInvitedIDList.erase(m_WeChatGroupInvitedIDList.begin() + i);
-			return;
+			i--;
 		}
 	}
 }
@@ -98,7 +116,7 @@ void WeChatGroupNodeLA::removeMember(int userId) {
 	for (auto it = m_WeChatGroupMemberInfoList.begin(); it != m_WeChatGroupMemberInfoList.end(); it++) {
 		if (userId == it->friendId) {
 			m_WeChatGroupMemberInfoList.erase(it);
-			return;
+			it--;
 		}
 	}
 }
@@ -118,7 +136,7 @@ void WeChatGroupNodeLA::removeWeChatGroupAdmin(int userId) {
 	for (auto it = m_WeChatGroupAdminsIDList.begin(); it != m_WeChatGroupAdminsIDList.end(); it++) {
 		if (it->friendId == userId) {
 			m_WeChatGroupAdminsIDList.erase(it);
-			return;
+			it--;
 		}
 	}
 }

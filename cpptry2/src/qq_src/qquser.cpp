@@ -221,7 +221,7 @@ void qqUserNodeLA::deleteQQFriendId(int id) {
 	for (int i = 0; i < m_qqFriendId.size(); i++) {
 		if (m_qqFriendId[i].friendId == id) {
 			m_qqFriendId.erase(m_qqFriendId.begin() + i);
-			return;
+			i--;
 		}
 	}
 }
@@ -230,7 +230,7 @@ void qqUserNodeLA::deleteQQGroupId(int id) {
 	for (int i = 0; i < m_qqGroupId.size(); i++) {
 		if (m_qqGroupId[i] == id) {
 			m_qqGroupId.erase(m_qqGroupId.begin() + i);
-			return;
+			i--;
 		}
 	}
 }

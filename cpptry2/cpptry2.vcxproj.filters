@@ -66,6 +66,9 @@
     <ClCompile Include="src\wechat_src\appWeChat_group.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\weibo_src\applicationWeibo.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\qq_src\qquser.h">
@@ -95,5 +98,11 @@
     <ClInclude Include="src\wechat_src\WeChatuser.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\weibo_src\applicationWeibo.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

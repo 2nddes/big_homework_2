@@ -46,14 +46,16 @@ public:
 
 	void friendPage();//好友根界面
 	void selectFriendPage();//选择好友
-	void sendMsgPage(qqUserNodeLA* friendPtr);
+	bool sendMsgPage(qqUserNodeLA* friendPtr);
 	void addFriendPage();//添加好友
 	void deleteFriendPage();//删除好友
+	bool deleteFriendPage(qqUserNodeLA* friendPtr);//删除好友
 	void friendRequestPage();//批阅好友申请
 	void chatWithFriendPage(qqUserNodeLA* friendPtr);//好友聊天界面
 	void addExternWeChatFriendPage();//添加外部WeChat好友
 	void addBySearchFriendNamePage();//搜索好友
 	void addByQQIdPage();//通过QQ号添加好友
+	void searchChatRecordPage(qqUserNodeLA* friendPtr);//搜索聊天记录
 
 	void groupPage();//群根界面
 	void selectGroupPage();//选择群
@@ -71,20 +73,25 @@ public:
 	void chatInGroupPage(qqGroupNodeLA* groupPtr);//群聊天界面
 	void setAdminPage(qqGroupNodeLA* groupPtr);//设置管理员
 	void setGroupNickNamePage(qqGroupNodeLA* groupPtr);//设置群昵称
+	void searchChatRecordPage(qqGroupNodeLA* groupPtr);//搜索聊天记录
+	void subGroupPage(qqGroupNodeLA* groupPtr);//子讨论组
 
-
+	void showPersonalInfoPage(qqUserNodeLA* user)const;//显示个人信息
 private:
-	//TODO:匿名聊天
 	void makeUserFile(string path)const;//创建用户文件
 
-	void showQQFriendList(vector<userInfo> friendlist)const; //显示好友列表
-	void showQQGroupList(vector<int> grouplist)const; //显示群列表
+	void showQQFriendList(const vector<userInfo>& friendlist)const; //显示好友列表
+	void showQQGroupList(const vector<int>& grouplist)const; //显示群列表
 	void showGroupMemberList(int groupId)const; //显示群成员
 	void showGroupMemberList(qqGroupNodeLA* groupPtr)const; //显示群成员
+	void clearChatRecord(qqUserNodeLA* friendPtr)const;//清空聊天记录
+	void clearChatRecord(qqGroupNodeLA* groupPtr)const;//清空聊天记录
 	//申请好友
 	void applyFriend(qqUserNodeLA* user,qqUserNodeLA* friendToAdd);
+	
 	//发送好友消息
 	bool sendMsgToFriend(qqUserNodeLA* friendPtr,const char* msg);
+	
 	//发群消息
 	bool sendMsgToGroup(qqGroupNodeLA* groupPtr,const char* msg);
 	
@@ -93,7 +100,7 @@ private:
 	void loadUserFile();//加载用户文件
 	void loadGroupFile();//加载群文件
 
-	void showMsg(vector<QMsg> m);//显示消息
+	void showMsg(const vector<QMsg>& m);//显示消息
 
 private:
 	qqUserNodeLA*  m_currentUser = nullptr;//当前用户

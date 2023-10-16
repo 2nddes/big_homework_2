@@ -96,6 +96,8 @@ void applicationWeChatLA::chatInGroupPage(WeChatGroupNodeLA* groupPtr) {
 			cout << "| 07 || 查看群请求                |" << endl;
 			cout << "| 08 || 设置管理员                |" << endl;
 			cout << "| 09 || 设置群昵称                |" << endl;
+			cout << "| 10 || 清空聊天记录              |" << endl;
+			cout << "| 11 || 搜索聊天记录			      |" << endl;
 			cout << "| 00 || 返回                      |" << endl;
 			cout << "__________________________________" << endl;
 			cout << "输入选项:";
@@ -132,6 +134,12 @@ void applicationWeChatLA::chatInGroupPage(WeChatGroupNodeLA* groupPtr) {
 			else if (i == 9) {
 				setGroupNickNamePage(groupPtr);
 			}
+			else if (i == 10) {
+				clearChatRecord(groupPtr);
+			}
+			else if (i == 11) {
+				searchChatRecordPage(groupPtr);
+			}
 			else if (i == 0) {
 				return;
 			}
@@ -152,6 +160,8 @@ void applicationWeChatLA::chatInGroupPage(WeChatGroupNodeLA* groupPtr) {
 			cout << "| 05 || 查看群请求                |" << endl;
 			cout << "| 06 || 踢出群成员                |" << endl;
 			cout << "| 07 || 设置群昵称                |" << endl;
+			cout << "| 08 || 清空聊天记录              |" << endl;
+			cout << "| 09 || 搜索聊天记录              |" << endl;
 			cout << "| 00 || 返回                      |" << endl;
 			cout << "__________________________________" << endl;
 			cout << "输入选项:";
@@ -181,6 +191,12 @@ void applicationWeChatLA::chatInGroupPage(WeChatGroupNodeLA* groupPtr) {
 			else if (i == 7) {
 				setGroupNickNamePage(groupPtr);
 			}
+			else if (i == 8) {
+				clearChatRecord(groupPtr);
+			}
+			else if (i == 9) {
+				searchChatRecordPage(groupPtr);
+			}
 			else if (i == 0) {
 				return;
 			}
@@ -199,6 +215,8 @@ void applicationWeChatLA::chatInGroupPage(WeChatGroupNodeLA* groupPtr) {
 			cout << "| 03 || 邀请进群                  |" << endl;
 			cout << "| 04 || 退出群                    |" << endl;
 			cout << "| 05 || 设置群昵称                |" << endl;
+			cout << "| 06 || 清空聊天记录              |" << endl;
+			cout << "| 07 || 搜索聊天记录              |" << endl;
 			cout << "| 00 || 返回                      |" << endl;
 			cout << "__________________________________" << endl;
 			cout << "输入选项:";
@@ -207,14 +225,7 @@ void applicationWeChatLA::chatInGroupPage(WeChatGroupNodeLA* groupPtr) {
 			cin >> i;
 			refreshInput();
 			if (i == 1) {
-				cout << "直接回车返回;输入消息回车发送:" << endl;
-				char message[300];
-				memset(message, 0, 300);
-				cin.getline(message, 300);
-				if (message[0] == '\0') {
-					continue;
-				}
-				(sendMsgToGroup(groupPtr, message)) ? cout << "发送成功" << endl : cout << "发送失败" << endl;
+				sendMsgPage(groupPtr);
 			}
 			else if (i == 2) {
 				showGroupMemberList(groupPtr);
@@ -228,6 +239,12 @@ void applicationWeChatLA::chatInGroupPage(WeChatGroupNodeLA* groupPtr) {
 			}
 			else if (i == 5) {
 				setGroupNickNamePage(groupPtr);
+			}
+			else if (i == 6) {
+				clearChatRecord(groupPtr);
+			}
+			else if (i == 7) {
+				searchChatRecordPage(groupPtr);
 			}
 			else if (i == 0) {
 				return;
@@ -360,13 +377,10 @@ void applicationWeChatLA::setGroupNickNamePage(WeChatGroupNodeLA* groupPtr) {
 	cout << "__________________________________" << endl;
 	cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << groupPtr->getGroupNickName(m_currentUser->getAppUserId()) << "|" << endl;
 	cout << "__________________________________" << endl;
-	cout << "输入新的昵称(不含空格等特殊字符,直接回车返回):" << endl;
+	cout << "输入新的昵称(不含空格等特殊字符):" << endl;
 	string nickName;
 	cin >> nickName;
 	refreshInput();
-	if (nickName == "") {
-		return;
-	}
 	groupPtr->setGroupNickName(m_currentUser->getAppUserId(), nickName);
 	m_allWeChatGroupList->saveGroupListData();
 
@@ -374,6 +388,29 @@ void applicationWeChatLA::setGroupNickNamePage(WeChatGroupNodeLA* groupPtr) {
 	system("pause");
 	return;
 
+}
+
+void applicationWeChatLA::searchChatRecordPage(WeChatGroupNodeLA* groupPtr)
+{
+	system("cls");
+	cout << "         查找聊天记录" << endl;
+	cout << "__________________________________" << endl;
+	cout << "输入要查找的内容:" << endl;
+	string content;
+	cin >> content;
+	refreshInput();
+
+	vector<WMsg> recordList = recvMsgFromGroup(groupPtr);
+	for (int i = 0; i < recordList.size(); i++) {
+		if (recordList[i].msg.find(content) == string::npos) {
+			recordList.erase(recordList.begin() + i);
+			i--;
+		}
+	}
+	system("cls");
+	showMsg(recordList);
+	system("pause");
+	return;
 }
 
 void applicationWeChatLA::searchGroupPage() {
@@ -1017,6 +1054,14 @@ void applicationWeChatLA::groupRequestPage(WeChatGroupNodeLA* groupPtr) {
 			int WeChatNumber = 0;
 			cin >> WeChatNumber;
 			refreshInput();
+			if (groupPtr->isMember(WeChatNumber))
+			{
+				cout << "该用户已是群成员" << endl;
+				groupPtr->removeRequest(WeChatNumber);
+				m_allWeChatGroupList->saveGroupListData();
+				system("pause");
+				continue;
+			}
 			//检查是否存在该请求
 			int j = 0;
 			for (j = 0; j < requestList.size(); j++) {
@@ -1050,6 +1095,14 @@ void applicationWeChatLA::groupRequestPage(WeChatGroupNodeLA* groupPtr) {
 			int WeChatNumber = 0;
 			cin >> WeChatNumber;
 			refreshInput();
+			if (groupPtr->isMember(WeChatNumber))
+			{
+				cout << "该用户已是群成员" << endl;
+				groupPtr->removeRequest(WeChatNumber);
+				m_allWeChatGroupList->saveGroupListData();
+				system("pause");
+				continue;
+			}
 			//检查是否存在该请求
 			int j = 0;
 			for (j = 0; j < requestList.size(); j++) {
@@ -1108,7 +1161,7 @@ bool applicationWeChatLA::sendMsgToGroup(WeChatGroupNodeLA* groupPtr, const char
 	return true;
 }
 
-void applicationWeChatLA::showWeChatGroupList(vector<int> grouplist) {
+void applicationWeChatLA::showWeChatGroupList(const vector<int>& grouplist) {
 	if (grouplist.size() == 0)
 	{
 		cout << "       您没有加入任何群" << endl;

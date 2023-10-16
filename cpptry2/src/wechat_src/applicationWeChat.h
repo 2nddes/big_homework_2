@@ -39,6 +39,7 @@ public:
 	WeChatUserNodeLA* findBySuperPtr(userNodeLA* superPtr)const override;//通过父指针查找用户
 	WeChatUserNodeLA* findByWeChatId(int id)const;
 
+	void showPersonalInfoPage(WeChatUserNodeLA* userPtr)const;//显示个人信息
 
 	void setUserInfoPage();//设置用户信息
 
@@ -47,11 +48,13 @@ public:
 	void sendMsgPage(WeChatUserNodeLA* friendPtr);
 	void addFriendPage();//添加好友
 	void deleteFriendPage();//删除好友
+	bool deleteFriendPage(WeChatUserNodeLA* friendPtr);//删除好友
 	void friendRequestPage();//批阅好友申请
 	void chatWithFriendPage(WeChatUserNodeLA* friendPtr);//好友聊天界面
 	void addExternQQFriendPage();//添加外部QQ好友
 	void addBySearchFriendNamePage();//搜索好友
 	void addByWeChatIdPage();//通过微信号添加好友
+	void searchChatRecordPage(WeChatUserNodeLA* friendPtr);//搜索聊天记录
 
 	void groupPage();//群根界面
 	void selectGroupPage();//选择群
@@ -69,13 +72,17 @@ public:
 	void chatInGroupPage(WeChatGroupNodeLA* groupPtr);//群聊天界面
 	void setAdminPage(WeChatGroupNodeLA* groupPtr);//设置管理员
 	void setGroupNickNamePage(WeChatGroupNodeLA* groupPtr);//设置群昵称
+	void searchChatRecordPage(WeChatGroupNodeLA* groupPtr);//搜索群聊天记录
 
 private:
-	//TODO:匿名聊天
 	void makeUserFile(string path);//创建用户文件
 
-	void showWeChatFriendList(vector<userInfo> friendlist);//显示好友列表
-	void showWeChatGroupList(vector<int> grouplist);//显示群列表
+	void clearChatRecord(WeChatUserNodeLA* friendPtr);//清空聊天记录
+
+	void clearChatRecord(WeChatGroupNodeLA* groupPtr);//清空聊天记录
+
+	void showWeChatFriendList(const vector<userInfo>& friendlist);//显示好友列表
+	void showWeChatGroupList(const vector<int>& grouplist);//显示群列表
 	void showGroupMemberList(int groupId);//显示群成员
 	void showGroupMemberList(WeChatGroupNodeLA* groupPtr);//显示群成员
 	//申请好友
@@ -90,7 +97,7 @@ private:
 	void loadUserFile();//加载用户文件
 	void loadGroupFile();//加载群文件
 
-	void showMsg(vector<WMsg> m);//显示消息
+	void showMsg(const vector<WMsg>& m);//显示消息
 	
 protected:
 	WeChatUserNodeLA* m_currentUser = nullptr;//当前用户

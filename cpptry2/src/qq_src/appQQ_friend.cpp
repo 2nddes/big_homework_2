@@ -67,18 +67,23 @@ void applicationQQLA::selectFriendPage() {
 	}
 }
 
-void applicationQQLA::sendMsgPage(qqUserNodeLA* friendPtr)
+bool applicationQQLA::sendMsgPage(qqUserNodeLA* friendPtr)
 {
 	cout << "直接回车返回;输入消息回车发送:" << endl;
 	char message[300];
 	memset(message, 0, 300);
 	cin.getline(message, 300);
 	if (message[0] == '\0') {
-		return;
+		return false;
 	}
-	(sendMsgToFriend(friendPtr, message))
-		? cout << "发送成功" << endl
-		: cout << "发送失败" << endl;
+	if (sendMsgToFriend(friendPtr, message)) {
+		cout << "发送成功" << endl;
+		return true;
+	}
+	else {
+		cout << "发送失败" << endl;
+		return false;
+	}
 }
 
 void applicationQQLA::addFriendPage() {
@@ -176,6 +181,38 @@ void applicationQQLA::deleteFriendPage() {
 	}
 }
 
+bool applicationQQLA::deleteFriendPage(qqUserNodeLA* friendPtr)
+{
+	system("cls");
+	cout << "          用户信息" << endl;
+	cout << "__________________________________" << endl;
+	cout << "|QQ号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << friendPtr->getAppUserId() << "|" << endl;
+	cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << friendPtr->getUserName() << "|" << endl;
+	cout << "__________________________________" << endl;
+	cout << "| 01 || 确认删除                  |" << endl;
+	cout << "|其他|| 取消                      |" << endl;
+	cout << "__________________________________" << endl;
+	cout << "输入选项:";
+
+	int i = 0;
+	cin >> i;
+	refreshInput();
+	if (i == 1) {
+		//互相删除好友
+		m_allQQUserList->findByQQId(friendPtr->getAppUserId())->deleteQQFriendId(m_currentUser->getAppUserId());
+		m_currentUser->deleteQQFriendId(friendPtr->getAppUserId());
+		m_allQQUserList->saveQQUserListData();
+		//删除聊天记录
+		clearChatRecord(friendPtr);
+		cout << "删除成功" << endl;
+		return true;
+	}
+	else {
+		cout << "取消删除" << endl;
+		return false;
+	}
+}
+
 void applicationQQLA::friendRequestPage() {
 	string path = "QQ\\" + to_string(m_currentUser->getAppUserId()) + "\\friendrequest.dat";
 	while (1)
@@ -205,16 +242,17 @@ void applicationQQLA::friendRequestPage() {
 		system("cls");
 		cout << "         好友请求列表" << endl;
 		cout << "__________________________________" << endl;
-		cout << "|QQ号|          昵 称           |" << endl;
+		cout << "|QQ号|          昵 称            |" << endl;
 		cout << "__________________________________" << endl;
 		for (int i = 0; i < qqNumberList.size(); i++) {
-			cout << "|" << setw(4) << setfill(' ') << qqNumberList[i] << "|";
-			cout << setw(26) << setfill(' ') << m_allQQUserList->findByQQId(qqNumberList[i])->getUserName() << "|" << endl;
+			cout << "|" << setw(4) << setfill(' ') << qqNumberList[i] << "| ";
+			cout << setw(26) << setfill(' ') << setiosflags(ios::left) << m_allQQUserList->findByQQId(qqNumberList[i])->getUserName() << "|" << endl;
 			cout << "__________________________________" << endl;
+			cout << resetiosflags(ios::left);
 		}
-		cout << "| 01 || 同意                    |" << endl;
-		cout << "| 02 || 拒绝                    |" << endl;
-		cout << "| 00 || 返回                    |" << endl;
+		cout << "| 01 || 同意                     |" << endl;
+		cout << "| 02 || 拒绝                     |" << endl;
+		cout << "| 00 || 返回                     |" << endl;
 		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
@@ -231,6 +269,23 @@ void applicationQQLA::friendRequestPage() {
 				system("pause");
 				continue;
 			}
+			if (m_currentUser->isFriend(qqNumber)) {
+				cout << "已经是好友" << endl;
+				system("pause");
+				//删除请求
+				for (int i = 0; i < qqNumberList.size(); i++) {
+					if (qqNumberList[i] == qqNumber) {
+						qqNumberList.erase(qqNumberList.begin() + i);
+						i--;
+					}
+				}
+				ofstream ofs(path, ios::out);
+				for (auto i : qqNumberList) {
+					ofs << i << " ";
+				}
+				ofs.close();
+				continue;
+			}
 			qqUserNodeLA* friendToAddPtr = m_allQQUserList->findByQQId(qqNumber);
 			//互相添加好友
 			userInfo info;
@@ -244,6 +299,7 @@ void applicationQQLA::friendRequestPage() {
 			for (int i = 0; i < qqNumberList.size(); i++) {
 				if (qqNumberList[i] == qqNumber) {
 					qqNumberList.erase(qqNumberList.begin() + i);
+					i--;
 				}
 			}
 
@@ -272,6 +328,7 @@ void applicationQQLA::friendRequestPage() {
 			for (int i = 0; i < qqNumberList.size(); i++) {
 				if (qqNumberList[i] == qqNumber) {
 					qqNumberList.erase(qqNumberList.begin() + i);
+					i--;
 				}
 			}
 
@@ -299,29 +356,65 @@ void applicationQQLA::friendRequestPage() {
 void applicationQQLA::chatWithFriendPage(qqUserNodeLA* friendPtr) {
 	while (1)
 	{
-		system("cls");
-		long long len = friendPtr->getUserName().length();
-		cout << setw((40 - len) / 2) << setfill(' ') << friendPtr->getUserName() << endl;
-		cout << "__________________________________" << endl;
-		showMsg(recvMsgFromFriend(friendPtr));
-		cout << "__________________________________" << endl;
-		cout << "| 01 || 发送消息                  |" << endl;
-		cout << "| 00 || 返回                      |" << endl;
-		cout << "__________________________________" << endl;
-		cout << "输入选项:";
-		int i = 0;
-		cin >> i;
-		refreshInput();
-		if (i == 1) {
-			sendMsgPage(friendPtr);
+		if(m_currentUser->isFriend(friendPtr)) {
+			system("cls");
+			long long len = friendPtr->getUserName().length();
+			cout << setw((40 - len) / 2) << setfill(' ') << friendPtr->getUserName() << endl;
+			cout << "__________________________________" << endl;
+			showMsg(recvMsgFromFriend(friendPtr));
+			cout << "__________________________________" << endl;
+			cout << "| 01 || 发送消息                  |" << endl;
+			cout << "| 02 || 查看资料                  |" << endl;
+			cout << "| 03 || 删除好友                  |" << endl;
+			cout << "| 04 || 清除聊天记录              |" << endl;
+			cout << "| 05 || 搜索聊天记录              |" << endl;
+			cout << "| 00 || 返回                      |" << endl;
+			cout << "__________________________________" << endl;
+			cout << "输入选项:";
+			int i = 0;
+			cin >> i;
+			refreshInput();
+			if (i == 1) {
+				sendMsgPage(friendPtr);
+			}
+			else if (i == 2) {
+				showPersonalInfoPage(friendPtr);
+			}
+			else if (i == 3) {
+				if (deleteFriendPage(friendPtr)) {
+					return;
+				}
+			}
+			else if (i == 4) {
+				clearChatRecord(friendPtr);
+			}
+			else if (i == 5) {
+				searchChatRecordPage(friendPtr);
+			}
+			else if (i == 0) {
+				return;
+			}
+			else {
+				cout << "输入错误" << endl;
+				system("pause");
+				continue;
+			}
 		}
-		else if (i == 0) {
+		else if (friendPtr->getAppUserId() == m_currentUser->getAppUserId()) {
+			cout << "不能与自己聊天" << endl;
+			system("pause");
 			return;
 		}
 		else {
-			cout << "输入错误" << endl;
-			system("pause");
-			continue;
+			system("cls");
+			long long len = friendPtr->getUserName().length();
+			cout << setw((40 - len) / 2) << setfill(' ') << friendPtr->getUserName() << "(临时)" << endl;
+			cout << "__________________________________" << endl;
+			showMsg(recvMsgFromFriend(friendPtr));
+			if (!sendMsgPage(friendPtr)) {
+				return;
+			}
+
 		}
 	}
 }
@@ -374,7 +467,7 @@ void applicationQQLA::addExternWeChatFriendPage() {
 		wcApp->exit();
 		delete wcApp;
 		if (wechatFriendList.size() == 0) {
-			cout << "没有qq好友开通微信服务" << endl;
+			cout << "无符合条件的好友" << endl;
 			system("pause");
 			return;
 		}
@@ -382,9 +475,9 @@ void applicationQQLA::addExternWeChatFriendPage() {
 		cout << "          用户信息" << endl;
 		cout << "__________________________________" << endl;
 		for (int i = 0; i < wechatFriendList.size(); i++) {
-			cout << "|微号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << wechatFriendList[i].wechatfriendId << "|" << endl;
-			cout << "|QQ号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << wechatFriendList[i].friendqqPtr->getAppUserId() << "|" << endl;
-			cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << wechatFriendList[i].friendqqPtr->getUserName() << "|" << endl;
+			cout << "|微号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << wechatFriendList[i].wechatfriendId << "|" << endl << resetiosflags(ios::left);
+			cout << "|QQ号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << wechatFriendList[i].friendqqPtr->getAppUserId() << "|" << endl << resetiosflags(ios::left);
+			cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << wechatFriendList[i].friendqqPtr->getUserName() << "|" << endl << resetiosflags(ios::left);
 			cout << "__________________________________" << endl;
 		}
 		cout << "| 01 || 好友申请                  |" << endl;
@@ -425,7 +518,7 @@ void applicationQQLA::addExternWeChatFriendPage() {
 		else {
 			cout << "取消添加" << endl;
 			system("pause");
-			continue;
+			return;
 		}
 	}
 
@@ -437,13 +530,10 @@ void applicationQQLA::addBySearchFriendNamePage() {
 		system("cls");
 		cout << "		 搜索好友名称" << endl;
 		cout << "__________________________________" << endl;
-		cout << "输入要搜索的昵称,直接回车返回:" << endl;
+		cout << "输入要搜索的昵称:" << endl;
 		string name;
 		cin >> name;
 		refreshInput();
-		if (name == "") {
-			return;
-		}
 		vector<userInfo> friendsToAdd = m_allQQUserList->searchByName(name);
 		for (int i = 0; i < friendsToAdd.size(); i++) {
 			if (m_currentUser->getAppUserId() == friendsToAdd[i].friendId) {
@@ -465,7 +555,7 @@ void applicationQQLA::addBySearchFriendNamePage() {
 			cout << "__________________________________" << endl;
 		}
 		cout << "| 01 || 好友申请                  |" << endl;
-		cout << "| 00 || 取消                      |" << endl;
+		cout << "|其他|| 返回                      |" << endl;
 		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
@@ -498,7 +588,7 @@ void applicationQQLA::addBySearchFriendNamePage() {
 			system("cls");
 			cout << "          用户信息" << endl;
 			cout << "__________________________________" << endl;
-			cout << "|微号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << friendToAddPtr->getAppUserId() << "|" << endl;
+			cout << "|QQ号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << friendToAddPtr->getAppUserId() << "|" << endl;
 			cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << friendToAddPtr->getUserName() << "|" << endl;
 			cout << "__________________________________" << endl;
 			cout << "| 01 || 好友申请                  |" << endl;
@@ -512,7 +602,7 @@ void applicationQQLA::addBySearchFriendNamePage() {
 				applyFriend(m_currentUser, friendToAddPtr);
 				cout << "好友申请成功" << endl;
 				system("pause");
-				continue;
+				return;
 			}
 			else {
 				cout << "取消添加" << endl;
@@ -523,7 +613,7 @@ void applicationQQLA::addBySearchFriendNamePage() {
 		else {
 			cout << "取消添加" << endl;
 			system("pause");
-			continue;
+			return;
 		}
 	}
 }
@@ -555,7 +645,7 @@ void applicationQQLA::addByQQIdPage() {
 		
 
 		cout << "输入要添加的QQ号:" << endl;
-		int id;
+		int id = 0;
 		cin >> id;
 		refreshInput();
 		if (id == m_currentUser->getAppUserId())
@@ -593,7 +683,7 @@ void applicationQQLA::addByQQIdPage() {
 			applyFriend(m_currentUser, friendToAddPtr);
 			cout << "好友申请成功" << endl;
 			system("pause");
-			continue;
+			return;
 		}
 		else {
 			cout << "取消添加" << endl;
@@ -602,6 +692,30 @@ void applicationQQLA::addByQQIdPage() {
 		}
 
 	}
+
+}
+
+void applicationQQLA::searchChatRecordPage(qqUserNodeLA* friendPtr)
+{
+	system("cls");
+	cout << "         搜索聊天记录" << endl;
+	cout << "__________________________________" << endl;
+	cout << "输入搜索内容:";
+	string content;
+	cin >> content;
+	refreshInput();
+
+	vector<QMsg> recordList = recvMsgFromFriend(friendPtr);
+	for (int i = 0; i < recordList.size(); i++) {
+		if (recordList[i].msg.find(content) == string::npos) {
+			recordList.erase(recordList.begin() + i);
+			i--;
+		}
+	}
+	system("cls");
+	showMsg(recordList);
+	system("pause");
+	return;
 
 }
 
@@ -701,6 +815,37 @@ bool applicationQQLA::sendMsgToFriend(qqUserNodeLA* friendPtr, const char* msg) 
 	return true;
 }
 
+void applicationQQLA::showPersonalInfoPage(qqUserNodeLA* user) const {
+	cout << "          个人信息" << endl;
+	cout << "__________________________________" << endl;
+	cout << "|QQ号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << user->getAppUserId() << "|" << endl;
+	cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << user->getUserName() << "|" << endl;
+	cout << "| T龄|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << user->getTAge() << "|" << endl;
+	cout << "|生日|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << user->getBirth() << "|" << endl;
+	cout << "|电话|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << user->getPhone() << "|" << endl;
+	cout << "|邮箱|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << user->getEmail() << "|" << endl;
+	cout << "|地址|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << user->getAddress() << "|" << endl;
+	cout << "__________________________________" << endl;
+	system("pause");
+	return;
+}
+
+void applicationQQLA::clearChatRecord(qqUserNodeLA* friendPtr)const {
+	string path = "QQ\\" + to_string(m_currentUser->getAppUserId()) + "\\chatrecord\\" + to_string(friendPtr->getAppUserId()) + ".dat";
+	//判断文件是否存在,不存在则创建
+	if (_access(path.c_str(), 0) == -1) {
+		ofstream outFile;
+		outFile.open(path, ios::out);
+		outFile.close();
+	}
+	ofstream ofs(path, ios::out);
+	if (!ofs.is_open()) {
+		cout << "打开文件失败" << endl;
+		return;
+	}
+	ofs.close();
+}
+
 vector<QMsg> applicationQQLA::recvMsgFromFriend(qqUserNodeLA* friendPtr)
 {
 	string path = "QQ\\" + to_string(m_currentUser->getAppUserId()) + "\\chatrecord\\" + to_string(friendPtr->getAppUserId()) + ".dat";
@@ -740,7 +885,7 @@ vector<QMsg> applicationQQLA::recvMsgFromFriend(qqUserNodeLA* friendPtr)
 	return msgList;
 }
 //TODO:color
-void applicationQQLA::showQQFriendList(vector<userInfo> friendlist)const {
+void applicationQQLA::showQQFriendList(const vector<userInfo>& friendlist)const {
 	if (friendlist.size() == 0)
 	{
 		cout << "        您没有任何好友" << endl;

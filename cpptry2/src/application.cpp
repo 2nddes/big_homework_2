@@ -2,6 +2,7 @@
 #include"application.h"
 #include"/project/C++Project/cpptry2/cpptry2/src/qq_src/applicationQQ.h"
 #include"/project/C++Project/cpptry2/cpptry2/src/wechat_src/applicationWeChat.h"
+#include"/project/C++Project/cpptry2/cpptry2/src/weibo_src/applicationWeibo.h"
 #include<iostream>
 #include<iomanip>
 
@@ -29,6 +30,8 @@ applicationListLA::applicationListLA(platformLA* platform) {
 
 	app->m_next = new applicationWeChatLA(platform);
 	app=app->m_next;
+
+	app->m_next = new applicationWeiboLA(platform);
 }
 
 applicationListLA::~applicationListLA() {
@@ -40,6 +43,7 @@ applicationListLA::~applicationListLA() {
 }
 
 applicationLA* applicationListLA::at(int index)const {
+	if (index == 0)return nullptr;
 	applicationLA* app = m_sentinel;
 	for (int i = 0; i < index&&app!=nullptr; ++i) {
 		app = app->m_next;

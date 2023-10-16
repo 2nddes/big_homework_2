@@ -62,7 +62,7 @@ bool applicationQQLA::init(userNodeLA*& curPlatformUser) {
 				cout << "平台用户" << curPlatformUser->getUserName() << " 未开通QQ服务" << endl;
 				cout << "__________________________________" << endl;
 				cout << "| 01 || 开通QQ服务                |" << endl;
-				cout << "| 00 || 退出QQ                    |" << endl;
+				cout << "|其他|| 退出QQ                    |" << endl;
 				cout << "__________________________________" << endl;
 				int i = 2;
 				cin >> i;
@@ -80,13 +80,8 @@ bool applicationQQLA::init(userNodeLA*& curPlatformUser) {
 						return true;
 					}
 				}
-				else if(i == 0) {
-					exit();
-					return false;
-				}
 				else {
-					cout << "输入错误" << endl;
-					system("pause");
+					exit();
 					return false;
 				}
 			}
@@ -94,6 +89,7 @@ bool applicationQQLA::init(userNodeLA*& curPlatformUser) {
 	}
 	return false;
 }
+
 void applicationQQLA::loadUserFile()
 {
 	m_allQQUserList = new qqUserListLA();
@@ -143,7 +139,7 @@ qqUserNodeLA* applicationQQLA::loginPage(userNodeLA*& curPlatformUser) {
 				continue;
 			}
 
-			cout << "请输入密码(不含空格等特殊字符):" ;
+			cout << "请输入密码:" ;
 			string password;
 			cin >> password;
 			refreshInput();
@@ -304,6 +300,11 @@ void applicationQQLA::mainPage() {
 			exit();
 			return;
 		}
+		else {
+			cout << "输入错误" << endl;
+			system("pause");
+			continue;
+		}
 	}
 }
 
@@ -327,13 +328,11 @@ void applicationQQLA::setUserInfoPage()
 		cin >> i;
 		refreshInput();
 		if (i == 1) {
-			cout << "输入新昵称(不含空格等特殊字符,直接回车返回):" << endl;
+			cout << "输入新昵称(不含空格等特殊字符):" << endl;
 			string name;
 			cin >> name;
 			refreshInput();
-			if (name == "") {
-				continue;
-			}
+
 			m_currentUser->setUserName(name);
 			m_allQQUserList->saveQQUserListData();
 			system("cls");
@@ -352,12 +351,10 @@ void applicationQQLA::setUserInfoPage()
 				system("pause");
 				continue;
 			}
-			cout << "输入新密码(不含空格等特殊字符,直接回车返回):";
+			cout << "输入新密码(不含空格等特殊字符):";
 			cin >> password;
 			refreshInput();
-			if (password == "") {
-				continue;
-			}
+
 			m_currentUser->setUserPasswd(password);
 			m_allQQUserList->saveQQUserListData();
 			system("cls");
@@ -392,9 +389,10 @@ void applicationQQLA::makeUserFile(string path)const {
 
 }
 //TODO:color
-void applicationQQLA::showMsg(vector<QMsg> m) {
+void applicationQQLA::showMsg(const vector<QMsg>& m) {
 	if (m.size() == 0) {
 		cout << "            目前无消息" << endl;
+		cout << "__________________________________" << endl;
 		return;
 	}
 	for (int i = 0; i < m.size(); i++) {
@@ -409,5 +407,6 @@ void applicationQQLA::showMsg(vector<QMsg> m) {
 				<< m[i].msg << endl;
 
 		}
+		cout << "__________________________________" << endl;
 	}
 }

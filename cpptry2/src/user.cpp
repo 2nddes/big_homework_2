@@ -78,6 +78,16 @@ int userNodeLA::getTAge()const {
 	//TODO: calculate age
 }
 
+string userNodeLA::getPhone() const
+{
+	return m_phoneNumber;
+}
+
+string userNodeLA::getEmail() const
+{
+	return m_email;
+}
+
 void userNodeLA::setNext(userNodeLA* next) {
 	m_next = next;
 }

@@ -25,13 +25,10 @@ void platformLA::run() {
 		cout << "__________________________________" << endl;
 		m_applicationList->showAllApp();
 		int count = m_applicationList->appCount();
-		cout << "| ";
-		cout << setw(2)
-			<< setfill('0')
-			<< setiosflags(ios::right)
-			<< ++count;
-		cout << resetiosflags(ios::right);
-		cout << " ||设置个人资料              |" << endl;
+		cout << "| " << setw(2) << setfill('0') << setiosflags(ios::right) << ++count << resetiosflags(ios::right);
+		cout <<     " ||设置个人资料              |" << endl;
+		cout << "| " << setw(2) << setfill('0') << setiosflags(ios::right) << ++count << resetiosflags(ios::right);
+		cout <<     " ||退出登录                  |" << endl;
 		cout << "| 00 ||退出                      |" << endl;
 		cout << "__________________________________" << endl;
 		cout << "输入选项:";
@@ -51,6 +48,9 @@ void platformLA::run() {
 		}
 		else if (i == m_applicationList->appCount() + 1) {
 			setPlatformUserInfo();
+		}
+		else if (i == m_applicationList->appCount() + 2) {
+			logOut();
 		}
 		else {
 			cout << "选项不存在" << endl;
@@ -101,12 +101,18 @@ void platformLA::setPlatformUserInfo()
 			}
 			m_currentUser->setUserName(name);
 			m_userList->saveUserList();
+			cout << "修改成功" << endl;
+			system("pause");
+			continue;
 		}
 		else if (i == 2) {
-			cout << "请输入新生日,格式例:20200808,直接回车返回:";
+			cout << "请输入新生日,格式例:20200808:";
 			int bday = dateInput();
 			m_currentUser->setBirth(bday);
 			m_userList->saveUserList();
+			cout << "修改成功" << endl;
+			system("pause");
+			continue;
 		}
 		else if (i == 3) {
 			cout << "请输入新电话,直接回车返回:";
@@ -117,6 +123,9 @@ void platformLA::setPlatformUserInfo()
 			}
 			m_currentUser->setPhone(phone);
 			m_userList->saveUserList();
+			cout << "修改成功" << endl;
+			system("pause");
+			continue;
 		}
 		else if (i == 4) {
 			cout << "请输入新邮箱,直接回车返回:";
@@ -127,6 +136,9 @@ void platformLA::setPlatformUserInfo()
 			}
 			m_currentUser->setEmail(email);
 			m_userList->saveUserList();
+			cout << "修改成功" << endl;
+			system("pause");
+			continue;
 		}
 		else if (i == 5) {
 			cout << "请输入新地址,直接回车返回:";
@@ -137,6 +149,9 @@ void platformLA::setPlatformUserInfo()
 			}
 			m_currentUser->setAddress(address);
 			m_userList->saveUserList();
+			cout << "修改成功" << endl;
+			system("pause");
+			continue;
 		}
 		else if (i == 0) {
 			return;
@@ -151,7 +166,7 @@ void platformLA::setPlatformUserInfo()
 void platformLA::logOut()
 {
 	m_currentUser = nullptr;
-	for (int i = 0; i < m_applicationList->appCount(); i++)
+	for (int i = 1; i <= m_applicationList->appCount(); i++)
 	{
 		m_applicationList->at(i)->logOut();
 	}

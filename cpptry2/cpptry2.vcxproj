@@ -149,6 +149,7 @@
     <ClCompile Include="src\wechat_src\appWeChat_group.cpp" />
     <ClCompile Include="src\wechat_src\WeChatgroup.cpp" />
     <ClCompile Include="src\wechat_src\WeChatuser.cpp" />
+    <ClCompile Include="src\weibo_src\applicationWeibo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\application.h" />
@@ -160,6 +161,10 @@
     <ClInclude Include="src\wechat_src\applicationWeChat.h" />
     <ClInclude Include="src\wechat_src\WeChatgroup.h" />
     <ClInclude Include="src\wechat_src\WeChatuser.h" />
+    <ClInclude Include="src\weibo_src\applicationWeibo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

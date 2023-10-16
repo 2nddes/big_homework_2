@@ -64,6 +64,12 @@ void qqGroupNodeLA::setNext(qqGroupNodeLA* next) {
 }
 
 void qqGroupNodeLA::addMember(int userId) {
+	//检查是否已经存在相同id的成员
+	for (int i = 0; i < m_qqGroupMemberInfoList.size(); i++) {
+		if (userId == m_qqGroupMemberInfoList[i].friendId) {
+			return;
+		}
+	}
 	userInfo memberInfo;
 	memberInfo.friendId = userId;
 	memberInfo.friendName = "无";
@@ -71,13 +77,26 @@ void qqGroupNodeLA::addMember(int userId) {
 }
 
 void qqGroupNodeLA::addQQGroupAdmin(int userId) {
+	//检查是否已经存在相同id的管理员
+	for (int i = 0; i < m_qqGroupAdminsIDList.size(); i++) {
+		if (userId == m_qqGroupAdminsIDList[i].friendId) {
+			return;
+		}
+	}
 	userInfo adminInfo;
 	adminInfo.friendId = userId;
+
 	adminInfo.friendName = "无";
 	m_qqGroupAdminsIDList.push_back(adminInfo);
 }
 
 void qqGroupNodeLA::addRequest(userInfo userinfo){
+	//检查是否已经存在相同id的请求
+	for (int i = 0; i < m_qqGroupInvitedIDList.size(); i++) {
+		if (userinfo.friendId == m_qqGroupInvitedIDList[i].friendId) {
+			return;
+		}
+	}
 	m_qqGroupInvitedIDList.push_back(userinfo);
 }
 
@@ -85,7 +104,7 @@ void qqGroupNodeLA::removeRequest(int userId) {
 	for (int i = 0; i < m_qqGroupInvitedIDList.size();i++) {
 		if (userId == m_qqGroupInvitedIDList[i].friendId) {
 			m_qqGroupInvitedIDList.erase(m_qqGroupInvitedIDList.begin() + i);
-			return;
+			i--;
 		}
 	}
 }
@@ -98,7 +117,7 @@ void qqGroupNodeLA::removeMember(int userId) {
 	for (auto it = m_qqGroupMemberInfoList.begin(); it != m_qqGroupMemberInfoList.end(); it++) {
 		if (userId == it->friendId) {
 			m_qqGroupMemberInfoList.erase(it);
-			return;
+			it--;
 		}
 	}
 }
@@ -118,7 +137,7 @@ void qqGroupNodeLA::removeQQGroupAdmin(int userId) {
 	for (auto it = m_qqGroupAdminsIDList.begin(); it != m_qqGroupAdminsIDList.end(); it++) {
 		if (it->friendId == userId) {
 			m_qqGroupAdminsIDList.erase(it);
-			return;
+			it--;
 		}
 	}
 }

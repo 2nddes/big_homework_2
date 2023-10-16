@@ -166,7 +166,7 @@ void applicationWeChatLA::addExternQQFriendPage() {
 		delete qqApp;
 
 		if (wechatFriendList.size() == 0) {
-			cout << "没有qq好友开通微信服务" << endl;
+			cout << "无符合条件的好友" << endl;
 			system("pause");
 			return;
 		}
@@ -217,7 +217,7 @@ void applicationWeChatLA::addExternQQFriendPage() {
 		else {
 			cout << "取消添加" << endl;
 			system("pause");
-			continue;
+			return;
 		}
 	}
 }
@@ -375,6 +375,30 @@ void applicationWeChatLA::addByWeChatIdPage()
 	}
 }
 
+void applicationWeChatLA::searchChatRecordPage(WeChatUserNodeLA* friendPtr)
+{
+	system("cls");
+	cout << "         搜索聊天记录" << endl;
+	cout << "__________________________________" << endl;
+	cout << "输入搜索内容:";
+	string content;
+	cin >> content;
+	refreshInput();
+
+	vector<WMsg> recordList = recvMsgFromFriend(friendPtr);
+	for (int i = 0; i < recordList.size(); i++) {
+		if (recordList[i].msg.find(content) == string::npos) {
+			recordList.erase(recordList.begin() + i);
+			i--;
+		}
+	}
+	system("cls");
+	showMsg(recordList);
+	system("pause");
+	return;
+
+}
+
 void applicationWeChatLA::deleteFriendPage() {
 	system("cls");
 	cout << "           删除好友" << endl;
@@ -403,7 +427,7 @@ void applicationWeChatLA::deleteFriendPage() {
 			cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << m_allWeChatUserList->findByWeChatId(WeChatNumber)->getUserName() << "|" << endl;
 			cout << "__________________________________" << endl;
 			cout << "| 01 || 确认删除                  |" << endl;
-			cout << "| 00 || 取消                      |" << endl;
+			cout << "|其他|| 取消                      |" << endl;
 			cout << "__________________________________" << endl;
 			cout << "输入选项:";
 
@@ -417,11 +441,8 @@ void applicationWeChatLA::deleteFriendPage() {
 				m_allWeChatUserList->saveWeChatUserListData();
 				cout << "删除成功" << endl;
 			}
-			else if (i == 0) {
-				cout << "取消删除" << endl;
-			}
 			else {
-				cout << "输入错误" << endl;
+				cout << "取消删除" << endl;
 			}
 			system("pause");
 			return;
@@ -431,6 +452,38 @@ void applicationWeChatLA::deleteFriendPage() {
 		cout << "不是好友" << endl;
 		system("pause");
 		return;
+	}
+}
+
+bool applicationWeChatLA::deleteFriendPage(WeChatUserNodeLA* friendPtr)
+{
+	system("cls");
+	cout << "          用户信息" << endl;
+	cout << "__________________________________" << endl;
+	cout << "|微号|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << friendPtr->getAppUserId() << "|" << endl;
+	cout << "|昵称|| " << setw(26) << setfill(' ') << setiosflags(ios::left) << friendPtr->getUserName() << "|" << endl;
+	cout << "__________________________________" << endl;
+	cout << "| 01 || 确认删除                  |" << endl;
+	cout << "|其他|| 取消                      |" << endl;
+	cout << "__________________________________" << endl;
+	cout << "输入选项:";
+
+	int i = 0;
+	cin >> i;
+	refreshInput();
+	if (i == 1) {
+		//互相删除好友
+		m_allWeChatUserList->findByWeChatId(friendPtr->getAppUserId())->deleteWeChatFriendId(m_currentUser->getAppUserId());
+		m_currentUser->deleteWeChatFriendId(friendPtr->getAppUserId());
+		m_allWeChatUserList->saveWeChatUserListData();
+		cout << "删除成功" << endl;
+		system("pause");
+		return true;
+	}
+	else {
+		cout << "取消删除" << endl;
+		system("pause");
+		return false;
 	}
 }
 
@@ -463,16 +516,17 @@ void applicationWeChatLA::friendRequestPage() {
 		system("cls");
 		cout << "         好友请求列表" << endl;
 		cout << "__________________________________" << endl;
-		cout << "|微号|          昵 称           |" << endl;
+		cout << "|微号|          昵 称            |" << endl;
 		cout << "__________________________________" << endl;
 		for (int i = 0; i < WeChatNumberList.size(); i++) {
-			cout << "|" << setw(4) << setfill(' ') << WeChatNumberList[i] << "|";
-			cout << setw(26) << setfill(' ') << m_allWeChatUserList->findByWeChatId(WeChatNumberList[i])->getUserName() << "|" << endl;
+			cout << "|" << setw(4) << setfill(' ') << WeChatNumberList[i] << "| ";
+			cout << setw(26) << setfill(' ') << setiosflags(ios::left) << m_allWeChatUserList->findByWeChatId(WeChatNumberList[i])->getUserName() << "|" << endl;
 			cout << "__________________________________" << endl;
+			cout << resetiosflags(ios::left);
 		}
-		cout << "| 01 || 同意                    |" << endl;
-		cout << "| 02 || 拒绝                    |" << endl;
-		cout << "| 00 || 返回                    |" << endl;
+		cout << "| 01 || 同意                     |" << endl;
+		cout << "| 02 || 拒绝                     |" << endl;
+		cout << "| 00 || 返回                     |" << endl;
 		cout << "__________________________________" << endl;
 		cout << "输入选项:";
 
@@ -489,6 +543,23 @@ void applicationWeChatLA::friendRequestPage() {
 				system("pause");
 				continue;
 			}
+			if (m_currentUser->isFriend(WeChatNumber)) {
+				cout << "已经是好友" << endl;
+				system("pause");
+				//删除请求
+				for (int i = 0; i < WeChatNumberList.size(); i++) {
+					if (WeChatNumberList[i] == WeChatNumber) {
+						WeChatNumberList.erase(WeChatNumberList.begin() + i);
+						i--;
+					}
+				}
+				ofstream ofs(path, ios::out);
+				for (auto i : WeChatNumberList) {
+					ofs << i << " ";
+				}
+				ofs.close();
+				continue;
+			}
 			WeChatUserNodeLA* friendToAddPtr = m_allWeChatUserList->findByWeChatId(WeChatNumber);
 			//互相添加好友
 			userInfo info;
@@ -502,6 +573,7 @@ void applicationWeChatLA::friendRequestPage() {
 			for (int i = 0; i < WeChatNumberList.size(); i++) {
 				if (WeChatNumberList[i] == WeChatNumber) {
 					WeChatNumberList.erase(WeChatNumberList.begin() + i);
+					i--;
 				}
 			}
 
@@ -530,6 +602,7 @@ void applicationWeChatLA::friendRequestPage() {
 			for (int i = 0; i < WeChatNumberList.size(); i++) {
 				if (WeChatNumberList[i] == WeChatNumber) {
 					WeChatNumberList.erase(WeChatNumberList.begin() + i);
+					i--;
 				}
 			}
 
@@ -564,6 +637,10 @@ void applicationWeChatLA::chatWithFriendPage(WeChatUserNodeLA* friendPtr) {
 		showMsg(recvMsgFromFriend(friendPtr));
 		cout << "__________________________________" << endl;
 		cout << "| 01 || 发送消息                  |" << endl;
+		cout << "| 02 || 查看资料                  |" << endl;
+		cout << "| 03 || 删除好友                  |" << endl;
+		cout << "| 04 || 清除聊天记录			      |" << endl;
+		cout << "| 05 || 搜索聊天记录              |" << endl;
 		cout << "| 00 || 返回                      |" << endl;
 		cout << "__________________________________" << endl;
 		cout << "输入选项:";
@@ -572,6 +649,20 @@ void applicationWeChatLA::chatWithFriendPage(WeChatUserNodeLA* friendPtr) {
 		refreshInput();
 		if (i == 1) {
 			sendMsgPage(friendPtr);
+		}
+		else if (i == 2) {
+			showPersonalInfoPage(friendPtr);
+		}
+		else if (i == 3) {
+			if (deleteFriendPage(friendPtr)){
+				return;
+			}
+		}
+		else if (i == 4) {
+			clearChatRecord(friendPtr);
+		}
+		else if (i == 5) {
+			searchChatRecordPage(friendPtr);
 		}
 		else if (i == 0) {
 			return;
@@ -680,6 +771,8 @@ bool applicationWeChatLA::sendMsgToFriend(WeChatUserNodeLA* friendPtr, const cha
 	return true;
 }
 
+
+
 vector<WMsg> applicationWeChatLA::recvMsgFromFriend(WeChatUserNodeLA* friendPtr)
 {
 	string path = "WeChat\\" + to_string(m_currentUser->getAppUserId()) + "\\chatrecord\\" + to_string(friendPtr->getAppUserId()) + ".dat";
@@ -719,7 +812,7 @@ vector<WMsg> applicationWeChatLA::recvMsgFromFriend(WeChatUserNodeLA* friendPtr)
 	return msgList;
 }
 //TODO:color
-void applicationWeChatLA::showWeChatFriendList(vector<userInfo> friendlist) {
+void applicationWeChatLA::showWeChatFriendList(const vector<userInfo>& friendlist) {
 	if (friendlist.size() == 0)
 	{
 		cout << "        您没有任何好友" << endl;

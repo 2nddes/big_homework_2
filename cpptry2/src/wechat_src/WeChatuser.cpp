@@ -223,7 +223,7 @@ void WeChatUserNodeLA::deleteWeChatFriendId(int id) {
 	for (int i = 0; i < m_WeChatFriendId.size(); i++) {
 		if (m_WeChatFriendId[i].friendId == id) {
 			m_WeChatFriendId.erase(m_WeChatFriendId.begin() + i);
-			return;
+			i--;
 		}
 	}
 }
@@ -232,7 +232,7 @@ void WeChatUserNodeLA::deleteWeChatGroupId(int id) {
 	for (int i = 0; i < m_WeChatGroupId.size(); i++) {
 		if (m_WeChatGroupId[i] == id) {
 			m_WeChatGroupId.erase(m_WeChatGroupId.begin() + i);
-			return;
+			i--;
 		}
 	}
 }
