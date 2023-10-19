@@ -25,13 +25,13 @@ applicationListLA::applicationListLA(platformLA* platform) {
 	m_sentinel = new applicationLA();
 	applicationLA* app = m_sentinel;
 
-	app->m_next = new applicationQQLA(platform);
+	app->m_next =(applicationLA*) new applicationQQLA(platform);
 	app = app->m_next;
 
-	app->m_next = new applicationWeChatLA(platform);
+	app->m_next = (applicationLA*) new applicationWeChatLA(platform);
 	app=app->m_next;
 
-	app->m_next = new applicationWeiboLA(platform);
+	app->m_next = (applicationLA*) new applicationWeiboLA(platform);
 }
 
 applicationListLA::~applicationListLA() {
@@ -118,22 +118,19 @@ int applicationLA::getAppVersion()const {
 }
 
 bool applicationLA::init(userNodeLA*& curPlatformUser) {
-	throw "非法调用基application的init()";
+	return false;
 }
 
 void applicationLA::mainPage()
 {
-	throw "非法调用基application的mainPage()";
 }
 
 void applicationLA::loadData()
 {
-	throw "非法调用基application的loadData()";
 }
 
 void applicationLA::logOut()
 {
-	throw "非法调用基application的logOut()";
 }
 
 userNodeLA* applicationLA::findBySuperPtr(userNodeLA* superPtr)const
@@ -142,5 +139,4 @@ userNodeLA* applicationLA::findBySuperPtr(userNodeLA* superPtr)const
 }
 
 void applicationLA::exit() {
-	throw "非法调用基application的exit()";
 }
